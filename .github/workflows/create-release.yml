@@ -1,0 +1,34 @@
+name: Github CI - Create release
+
+on:
+  push:
+    branches:
+      - release/*
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: action/checkout@v2
+
+      - name: Set up Node.js 12.x
+        uses: action/setup-node@v1
+        with:
+          node-version: '12.x'
+          registry-url: 'https://registry.npmjs.org'
+
+      # This step provides me the information about package (version) from package.json.
+      - name: Grant access to bash scripts
+        id: pkg-info
+        run: |
+          ./scripts/pkginfo.sh
+
+      - name: Create release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{steps.pkg-info.outputs.package-version}}
+          release_name: Release ${{steps.pkg-info.outputs.package-version}}
+          draft: true
+          prerelease: false
