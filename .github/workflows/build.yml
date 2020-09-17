@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-
       - name: Set up Node.js 12.x
         uses: actions/setup-node@v1
         with:
@@ -34,6 +33,11 @@ jobs:
         run: yarn lint
       - name: Running test coverage
         run: yarn test:coverage
+        env:
+          TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+          TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
+          TWILIO_PHONE_NUMBER: ${{ secrets.TWILIO_PHONE_NUMBER }}
+          TWILIO_TARGET_PHONE_NUMBER: ${{ secrets.TWILIO_TARGET_PHONE_NUMBER }}
       - name: Building dist
         run: yarn build:dist
       - name: Summing test coverage
