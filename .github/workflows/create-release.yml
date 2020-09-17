@@ -9,20 +9,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: action/checkout@v2
-
+      - uses: actions/checkout@v2
       - name: Set up Node.js 12.x
-        uses: action/setup-node@v1
+        uses: actions/setup-node@v1
         with:
           node-version: '12.x'
           registry-url: 'https://registry.npmjs.org'
-
       # This step provides me the information about package (version) from package.json.
       - name: Grant access to bash scripts
         id: pkg-info
         run: |
           ./scripts/pkginfo.sh
-
       - name: Create release
         uses: actions/create-release@v1
         env:

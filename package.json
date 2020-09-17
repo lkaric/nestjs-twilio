@@ -1,0 +1,68 @@
+{
+  "name": "nestjs-twilio",
+  "version": "1.0.0",
+  "description": "Injectable Twilio client for Nestjs",
+  "license": "MIT",
+  "author": {
+    "name": "Lazar Karic",
+    "email": "kadzajr@gmail.com",
+    "url": "https://lkaric.tech"
+  },
+  "repository": "https://github.com/rejvban/nestjs-twilio",
+  "bugs": "https://github.com/rejvban/nestjs-twilio/issues",
+  "private": false,
+  "keywords": [
+    "nestjs",
+    "twilio",
+    "sms",
+    "client",
+    "sdk",
+    "typescript",
+    "nestjs-twilio",
+    "twilio-nestjs"
+  ],
+  "source": "lib/index.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build:dist": "yarn clean:dist && tsc -p tsconfig.build.json",
+    "test:run": "NODE_ENV=test jest",
+    "test:watch": "yarn test:run --watch",
+    "test:coverage": "yarn clean:test && yarn test:run --coverage",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint --fix . --ext .js,.ts,.tsx",
+    "clean:dist": "rimraf dist",
+    "clean:test": "rimraf coverage",
+    "prepare": "yarn build:dist"
+  },
+  "dependencies": {
+    "twilio": "3.49.1"
+  },
+  "devDependencies": {
+    "@nestjs/common": "7.4.4",
+    "@nestjs/core": "7.4.4",
+    "@nestjs/testing": "7.4.4",
+    "@types/jest": "26.0.14",
+    "@types/node": "14.10.2",
+    "@types/twilio": "^2.11.0",
+    "@typescript-eslint/eslint-plugin": "^4.1.1",
+    "@typescript-eslint/parser": "^4.1.1",
+    "dotenv": "^8.2.0",
+    "eslint": "^7.9.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "husky": "^4.3.0",
+    "jest": "26.4.2",
+    "lint-staged": "^10.4.0",
+    "prettier": "2.1.2",
+    "reflect-metadata": "^0.1.13",
+    "rimraf": "^3.0.2",
+    "rxjs": "6.6.3",
+    "ts-jest": "26.3.0",
+    "typescript": "4.0.2"
+  }
+}
