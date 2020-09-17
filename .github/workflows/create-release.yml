@@ -19,6 +19,7 @@ jobs:
       - name: Grant access to bash scripts
         id: pkg-info
         run: |
+          chmod +x ./scripts/pkginfo.sh
           ./scripts/pkginfo.sh
       - name: Create release
         uses: actions/create-release@v1

@@ -12,6 +12,8 @@
   </p>
 </p>
 
+[![build status](https://img.shields.io/github/workflow/status/rejvban/nestjs-twilio/Github%20CI%20-%20Build%20Status%20and%20Test%20Coverage)](https://github.com/wellyshen/use-places-autocomplete/actions?query=workflow%3ACI) [![codecov](https://codecov.io/gh/rejvban/nestjs-twilio/branch/master/graph/badge.svg)](https://codecov.io/gh/rejvban/nestjs-twilio) [![npm version](https://img.shields.io/npm/v/nestjs-twilio)](https://www.npmjs.com/package/nestjs-twilio) [![miniziped size](https://badgen.net/bundlephobia/minzip/nestjs-twilio)](https://bundlephobia.com/result?p=nestjs-twilio) [![tree shaking](https://badgen.net/bundlephobia/tree-shaking/react-colorful)](https://github.com/rejvban/nestjs-twilio) [![MIT licensed](https://img.shields.io/github/license/rejvban/nestjs-twilio)](https://raw.githubusercontent.com/rejvban/nestjs-twilio/master/LICENSE)
+
 Implementing the `TwilioModule` from this package you gain access to Twilio client through dependency injection with minimal setup.
 
 ## Instalation
