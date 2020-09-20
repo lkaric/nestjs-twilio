@@ -30,7 +30,6 @@ describe('TwiliModule', () => {
       const sentry = module.get<TwilioModuleOptions>(TWILIO_CONFIG_TOKEN);
 
       expect(sentry).toBeDefined();
-      expect(sentry).toBeInstanceOf(TwilioClient);
     });
   });
 
@@ -48,7 +47,6 @@ describe('TwiliModule', () => {
         const sentry = module.get<TwilioModuleOptions>(TWILIO_CONFIG_TOKEN);
 
         expect(sentry).toBeDefined();
-        expect(sentry).toBeInstanceOf(TwilioClient);
       });
     });
 
@@ -68,7 +66,6 @@ describe('TwiliModule', () => {
       const sentry = module.get<TwilioModuleOptions>(TWILIO_CONFIG_TOKEN);
 
       expect(sentry).toBeDefined();
-      expect(sentry).toBeInstanceOf(TwilioClient);
     });
   });
 });
