@@ -8,7 +8,7 @@
   </p>
 
   <p align="center">
-    Injectable Twilio client for [Nestjs](https://nestjs.com/).
+    Injectable Twilio client for <a href="https://nestjs.com/">Nestjs</a>.
   </p>
 </p>
 
