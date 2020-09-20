@@ -1,3 +1,4 @@
 import * as Twilio from 'twilio';
 
-export default Twilio.Twilio;
+// eslint-disable-next-line
+export interface TwilioClient extends Twilio.Twilio {}

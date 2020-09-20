@@ -1,6 +1,6 @@
 {
   "name": "nestjs-twilio",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Injectable Twilio client for Nestjs",
   "license": "MIT",
   "author": {

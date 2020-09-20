@@ -41,7 +41,6 @@ describe('InjectTwilio', () => {
       const testService = module.get(InjectableService);
 
       expect(testService).toHaveProperty('client');
-      expect(testService.client).toBeInstanceOf(TwilioClient);
     });
   });
 
