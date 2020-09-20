@@ -1,10 +1,6 @@
 import { Test } from '@nestjs/testing';
 import { TWILIO_CONFIG_TOKEN } from '../common';
-import {
-  TwilioModuleOptions,
-  TwilioOptionsFactory,
-  TwilioClient,
-} from '../interfaces';
+import { TwilioModuleOptions, TwilioOptionsFactory } from '../interfaces';
 import { TwilioModule } from '../twilio.module';
 
 describe('TwiliModule', () => {
@@ -30,7 +26,6 @@ describe('TwiliModule', () => {
       const sentry = module.get<TwilioModuleOptions>(TWILIO_CONFIG_TOKEN);
 
       expect(sentry).toBeDefined();
-      expect(sentry).toBeInstanceOf(TwilioClient);
     });
   });
 
@@ -48,7 +43,6 @@ describe('TwiliModule', () => {
         const sentry = module.get<TwilioModuleOptions>(TWILIO_CONFIG_TOKEN);
 
         expect(sentry).toBeDefined();
-        expect(sentry).toBeInstanceOf(TwilioClient);
       });
     });
 
@@ -68,7 +62,6 @@ describe('TwiliModule', () => {
       const sentry = module.get<TwilioModuleOptions>(TWILIO_CONFIG_TOKEN);
 
       expect(sentry).toBeDefined();
-      expect(sentry).toBeInstanceOf(TwilioClient);
     });
   });
 });
