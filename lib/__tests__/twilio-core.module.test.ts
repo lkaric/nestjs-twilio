@@ -1,10 +1,6 @@
 import { Test } from '@nestjs/testing';
 import { TWILIO_CONFIG_TOKEN } from '../common';
-import {
-  TwilioModuleOptions,
-  TwilioOptionsFactory,
-  TwilioClient,
-} from '../interfaces';
+import { TwilioModuleOptions, TwilioOptionsFactory } from '../interfaces';
 import { TwilioModule } from '../twilio.module';
 
 describe('TwiliModule', () => {
