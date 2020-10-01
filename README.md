@@ -76,7 +76,7 @@ export class AppService {
 
   async sendSMS() {
     try {
-      return await this.client.message.create({
+      return await this.client.messages.create({
         body: 'SMS Body, sent to the phone!',
         from: process.env.TWILIO_PHONE_NUMBER,
         to: TARGET_PHONE_NUMBER,
