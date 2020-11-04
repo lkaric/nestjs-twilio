@@ -19,11 +19,11 @@ Implementing the `TwilioModule` from this package you gain access to Twilio clie
 ## Instalation
 
 ```bash
-$ npm install --save nestjs-twilio
+$ npm install --save twilio nestjs-twilio
 ```
 
 ```bash
-$ yarn add nestjs-twilio
+$ yarn add twilio nestjs-twilio
 ```
 
 ## Getting Started
