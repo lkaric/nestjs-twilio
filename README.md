@@ -87,3 +87,6 @@ export class AppService {
   }
 }
 ```
+## Testing
+
+Example of testing can be found [here](https://github.com/rejvban/nestjs-twilio/blob/master/lib/__tests__/twilio.decorators.test.ts).

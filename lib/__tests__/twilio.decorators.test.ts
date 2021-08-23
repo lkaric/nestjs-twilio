@@ -48,8 +48,7 @@ describe('InjectTwilio', () => {
     it('should send a test sms to the phone number defined in env', async () => {
       const testService = module.get(InjectableService);
       const response = await testService.client.messages.create({
-        body:
-          'Automated testing of https://www.github.com/rejvban/nestjs-twilio',
+        body: 'Automated testing of https://www.github.com/rejvban/nestjs-twilio',
         from: TWILIO_PHONE_NUMBER,
         to: TWILIO_TARGET_PHONE_NUMBER,
       });
