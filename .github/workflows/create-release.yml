@@ -2,8 +2,7 @@ name: Github CI - Create release
 
 on:
   push:
-    branches:
-      - release/*
+    branches: [ master ]
 
 jobs:
   build:

@@ -1,11 +1,8 @@
 module.exports = {
   preset: 'ts-jest',
-  transform: {
-    '^.+\\.(t|j)s$': 'ts-jest',
-  },
   globals: {
     'ts-jest': {
-      tsConfig: './tsconfig.test.json',
+      tsconfig: './tsconfig.test.json',
     },
   },
   testRegex: '.test.ts$',
