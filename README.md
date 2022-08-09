@@ -28,7 +28,7 @@ $ yarn add twilio nestjs-twilio
 
 ## Getting Started
 
-The simplest way to use `nestjs-twilio` is to use `TwilioModule.forRoot`
+To use Twilio client we need to register module for example in app.module.ts
 
 ```typescript
 import { TwilioModule } from 'nestjs-twilio';
@@ -44,7 +44,7 @@ import { TwilioModule } from 'nestjs-twilio';
 export class AppModule {}
 ```
 
-Utilizing asynchronous providers
+If you are using the `@nestjs/config package` from nest, you can use the `ConfigModule` using the `registerAsync()` function to inject your environment variables like this in your custom module:
 
 ```typescript
 import { TwilioModule } from 'nestjs-twilio';
@@ -53,7 +53,7 @@ import { TwilioModule } from 'nestjs-twilio';
   imports: [
     TwilioModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: async (cfg: ConfigService) => ({
+      useFactory: (cfg: ConfigService) => ({
         accountSid: cfg.get('TWILIO_ACCOUNT_SID'),
         authToken: cfg.get('TWILIO_AUTH_TOKEN'),
       }),
@@ -64,29 +64,29 @@ import { TwilioModule } from 'nestjs-twilio';
 export class AppModule {}
 ```
 
-You can then inject the Twilio client into any of your injectables by using a
-custom decorator
+Example usage in service.
 
 ```typescript
-import { InjectTwilio, TwilioClient } from 'nestjs-twilio';
+import { InjectTwilio, TwilioService } from 'nestjs-twilio';
 
 @Injectable()
 export class AppService {
-  public constructor(@InjectTwilio() private readonly client: TwilioClient) {}
+  public constructor(private readonly twilioService: TwilioService) {}
 
   async sendSMS() {
-    try {
-      return await this.client.messages.create({
-        body: 'SMS Body, sent to the phone!',
-        from: process.env.TWILIO_PHONE_NUMBER,
-        to: TARGET_PHONE_NUMBER,
-      });
-    } catch (e) {
-      return e;
-    }
+    return this.twilioService.client.messages.create({
+      body: 'SMS Body, sent to the phone!',
+      from: TWILIO_PHONE_NUMBER,
+      to: TARGET_PHONE_NUMBER,
+    });
   }
 }
 ```
+
+For full Client API see Twilio Node SDK reference [here](https://www.twilio.com/docs/libraries/node)
+
+## :rotating_light: `@InjectTwilio()` decorator has been deprecated in v3
+
 ## Testing
 
-Example of testing can be found [here](https://github.com/rejvban/nestjs-twilio/blob/master/lib/__tests__/twilio.decorators.test.ts).
+Example of testing can be found [here](https://github.com/rejvban/nestjs-twilio/blob/master/lib/__tests__/twilio.module.test.ts).
