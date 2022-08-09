@@ -1,4 +1,2 @@
-export * from './common';
-export * from './interfaces';
-export * from './providers';
-export * from './twilio.module';
+export * from './module';
+export * from './utils/twilio.interface';
