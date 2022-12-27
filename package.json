@@ -43,7 +43,7 @@
     "postpublish": "pinst --enable"
   },
   "dependencies": {
-    "twilio": "3.83.3"
+    "twilio": "3.84.0"
   },
   "peerDependencies": {
     "@nestjs/common": ">=9.0.0",
