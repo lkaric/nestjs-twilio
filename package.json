@@ -1,6 +1,6 @@
 {
   "name": "nestjs-twilio",
-  "version": "3.2.1",
+  "version": "4.0.0",
   "description": "Injectable Twilio client for Nestjs",
   "license": "MIT",
   "author": {
@@ -42,8 +42,12 @@
     "prepublishOnly": "pinst --disable",
     "postpublish": "pinst --enable"
   },
+  "engines": {
+    "npm": ">=8.0.0",
+    "node": ">=14.0.0"
+  },
   "dependencies": {
-    "twilio": "3.84.0"
+    "twilio": "4.0.0-rc.5"
   },
   "peerDependencies": {
     "@nestjs/common": ">=9.0.0",

@@ -1,4 +1,5 @@
-import { Twilio } from 'twilio';
+import type { ClientOpts } from 'twilio/dist/lib/base/BaseTwilio';
+import Twilio from 'twilio/dist/lib/rest/Twilio';
 
 export type TwilioClient = Twilio;
 
@@ -8,5 +9,5 @@ export interface ExtraConfiguration {
 export interface TwilioModuleOptions extends ExtraConfiguration {
   accountSid: string | undefined;
   authToken: string | undefined;
-  options?: Twilio.TwilioClientOptions | undefined;
+  options?: ClientOpts | undefined;
 }
