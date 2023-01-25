@@ -85,6 +85,8 @@ export class AppService {
 
 For full Client API see Twilio Node SDK reference [here](https://www.twilio.com/docs/libraries/node)
 
+The Twilio SDK 4.0.0 introduces breaking changes to API - Please refer to [here](https://github.com/twilio/twilio-node/blob/4.0.0-rc.5/UPGRADE.md) for upgrade guide.
+
 ## :rotating_light: `@InjectTwilio()` decorator has been deprecated in v3
 
 ## Testing
