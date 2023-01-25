@@ -16,8 +16,8 @@
 
 Implementing the `TwilioModule` from this package you gain access to Twilio client through dependency injection with minimal setup.
 
-Upgrade from 3.2.1 to 4.0.0
-===
+## Upgrade from 3.2.1 to 4.0.0
+
 The Twilio SDK 4.0.0 introduces breaking changes to API - Please refer to [here](https://github.com/twilio/twilio-node/blob/4.0.0-rc.5/UPGRADE.md) for upgrade guide.
 
 ## Instalation
