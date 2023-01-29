@@ -43,7 +43,8 @@
     "postpublish": "pinst --enable"
   },
   "engines": {
-    "npm": ">=8.0.0",
+    "npm": "please-use-yarn",
+    "yarn": ">=1.17.3",
     "node": ">=14.0.0"
   },
   "dependencies": {
