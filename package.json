@@ -48,7 +48,7 @@
     "node": ">=14.0.0"
   },
   "dependencies": {
-    "twilio": "4.0.0"
+    "twilio": "4.7.1"
   },
   "peerDependencies": {
     "@nestjs/common": ">=9.0.0",
