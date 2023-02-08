@@ -3308,10 +3308,10 @@ tsutils@^3.21.0:
   dependencies:
     tslib "^1.8.1"
 
-twilio@4.0.0-rc.5:
-  version "4.0.0-rc.5"
-  resolved "https://registry.yarnpkg.com/twilio/-/twilio-4.0.0-rc.5.tgz#c5f94c6151e3afe2e2e29540f02bc36e44819b2e"
-  integrity sha512-NNCK7YkjRMmxDDC8vRGt+RR+q+LHpCYcnfYVXCu89vMqw+OASBsC755HGbgZsmYalb9Mnv0gpDqUURcwu4BYZA==
+twilio@4.7.1:
+  version "4.7.1"
+  resolved "https://registry.yarnpkg.com/twilio/-/twilio-4.7.1.tgz#3b6a715a519b86e14c7ed2bb4093d8d0574b7a85"
+  integrity sha512-6+NCSH9J3GoJ+kjqnOLslRs2Oi6QmnSRAd7DHvxBXP5moszHdPIeGXT0NctcXY4+z/n2UkEEQTxc1u1szKnz5g==
   dependencies:
     axios "^0.26.1"
     dayjs "^1.8.29"
