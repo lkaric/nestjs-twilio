@@ -1,6 +1,6 @@
 {
   "name": "nestjs-twilio",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "description": "Injectable Twilio client for Nestjs",
   "license": "MIT",
   "author": {
@@ -48,18 +48,18 @@
     "node": ">=14.0.0"
   },
   "dependencies": {
-    "twilio": "4.0.0"
+    "twilio": "4.7.2"
   },
   "peerDependencies": {
     "@nestjs/common": ">=9.0.0",
     "@nestjs/core": ">=9.0.0"
   },
   "devDependencies": {
-    "@nestjs/common": "9.2.1",
-    "@nestjs/core": "9.2.1",
-    "@nestjs/testing": "9.2.1",
+    "@nestjs/common": "9.3.7",
+    "@nestjs/core": "9.3.7",
+    "@nestjs/testing": "9.3.7",
     "@types/jest": "29.4.0",
-    "@types/node": "18.11.18",
+    "@types/node": "18.13.0",
     "@typescript-eslint/eslint-plugin": "^5.38.1",
     "@typescript-eslint/parser": "^5.38.1",
     "dotenv": "^16.0.3",
@@ -75,6 +75,6 @@
     "rimraf": "^4.0.0",
     "rxjs": "7.8.0",
     "ts-jest": "29.0.5",
-    "typescript": "4.9.4"
+    "typescript": "4.9.5"
   }
 }
