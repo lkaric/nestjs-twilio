@@ -1,9 +1,12 @@
 module.exports = {
   preset: 'ts-jest',
-  globals: {
-    'ts-jest': {
-      tsconfig: './tsconfig.test.json',
-    },
+  transform: {
+    '.test.ts$': [
+      'ts-jest',
+      {
+        tsconfig: './tsconfig.test.json',
+      },
+    ],
   },
   testRegex: '.test.ts$',
   collectCoverageFrom: ['lib/**/*.*.ts'],

@@ -48,29 +48,29 @@
     "node": ">=14.0.0"
   },
   "dependencies": {
-    "twilio": "4.7.2"
+    "twilio": "^4.7.2"
   },
   "peerDependencies": {
     "@nestjs/common": ">=9.0.0",
     "@nestjs/core": ">=9.0.0"
   },
   "devDependencies": {
-    "@nestjs/common": "9.3.7",
-    "@nestjs/core": "9.3.7",
-    "@nestjs/testing": "9.3.7",
+    "@nestjs/common": "9.3.9",
+    "@nestjs/core": "9.3.9",
+    "@nestjs/testing": "9.3.9",
     "@types/jest": "29.4.0",
-    "@types/node": "18.13.0",
-    "@typescript-eslint/eslint-plugin": "^5.38.1",
-    "@typescript-eslint/parser": "^5.38.1",
+    "@types/node": "18.14.0",
+    "@typescript-eslint/eslint-plugin": "^5.52.0",
+    "@typescript-eslint/parser": "^5.52.0",
     "dotenv": "^16.0.3",
-    "eslint": "^8.24.0",
-    "eslint-config-prettier": "^8.5.0",
+    "eslint": "^8.34.0",
+    "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "husky": "^8.0.2",
-    "jest": "29.4.0",
-    "lint-staged": "^13.0.3",
+    "husky": "^8.0.3",
+    "jest": "29.4.3",
+    "lint-staged": "^13.1.2",
     "pinst": "^3.0.0",
-    "prettier": "2.8.3",
+    "prettier": "2.8.4",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^4.0.0",
     "rxjs": "7.8.0",
