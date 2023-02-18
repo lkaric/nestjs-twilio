@@ -42,11 +42,6 @@
     "prepublishOnly": "pinst --disable",
     "postpublish": "pinst --enable"
   },
-  "engines": {
-    "npm": "please-use-yarn",
-    "yarn": ">=1.17.3",
-    "node": ">=14.0.0"
-  },
   "dependencies": {
     "twilio": "^4.7.2"
   },
