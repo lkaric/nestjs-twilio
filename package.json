@@ -29,15 +29,15 @@
     "dist"
   ],
   "scripts": {
-    "build:dist": "yarn clean:dist && tsc -p tsconfig.build.json",
+    "build:dist": "pnpm clean:dist && tsc -p tsconfig.build.json",
     "test:run": "NODE_ENV=test jest",
-    "test:watch": "yarn test:run --watch",
-    "test:coverage": "yarn clean:test && yarn test:run --coverage",
+    "test:watch": "pnpm test:run --watch",
+    "test:coverage": "pnpm clean:test && pnpm test:run --coverage",
     "type-check": "tsc --noEmit",
     "lint": "eslint --fix . --ext .js,.ts,.tsx",
     "clean:dist": "rimraf dist",
     "clean:test": "rimraf coverage",
-    "prepare": "yarn build:dist",
+    "prepare": "pnpm build:dist",
     "postinstall": "husky install",
     "prepublishOnly": "pinst --disable",
     "postpublish": "pinst --enable"
