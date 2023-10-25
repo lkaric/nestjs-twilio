@@ -148,7 +148,7 @@ jobs:
         run: pnpm install --frozen-lockfile --prefer-offline
 
       - name: Running test
-        run: pnpm test
+        run: pnpm test:run
         env:
           TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
           TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
