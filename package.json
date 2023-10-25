@@ -50,6 +50,8 @@
     "@nestjs/core": ">=9.0.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^18.1.0",
+    "@commitlint/config-conventional": "^18.1.0",
     "@nestjs/common": "9.3.9",
     "@nestjs/core": "9.3.9",
     "@nestjs/testing": "9.3.9",
