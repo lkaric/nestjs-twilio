@@ -12,13 +12,12 @@
   </p>
 </p>
 
-[![build status](https://img.shields.io/github/workflow/status/rejvban/nestjs-twilio/Github%20CI%20-%20Build%20Status%20and%20Test%20Coverage)](https://github.com/wellyshen/use-places-autocomplete/actions?query=workflow%3ACI) [![codecov](https://codecov.io/gh/rejvban/nestjs-twilio/branch/master/graph/badge.svg)](https://codecov.io/gh/rejvban/nestjs-twilio) [![npm version](https://img.shields.io/npm/v/nestjs-twilio)](https://www.npmjs.com/package/nestjs-twilio) [![miniziped size](https://badgen.net/bundlephobia/minzip/nestjs-twilio)](https://bundlephobia.com/result?p=nestjs-twilio) [![tree shaking](https://badgen.net/bundlephobia/tree-shaking/react-colorful)](https://github.com/rejvban/nestjs-twilio) [![MIT licensed](https://img.shields.io/github/license/rejvban/nestjs-twilio)](https://raw.githubusercontent.com/rejvban/nestjs-twilio/master/LICENSE)
+[![npm version](https://img.shields.io/npm/v/nestjs-twilio)](https://www.npmjs.com/package/nestjs-twilio)
+[![miniziped size](https://badgen.net/bundlephobia/minzip/nestjs-twilio)](https://bundlephobia.com/result?p=nestjs-twilio)
+[![tree shaking](https://badgen.net/bundlephobia/tree-shaking/react-colorful)](https://github.com/lkaric/nestjs-twilio)
+[![MIT licensed](https://img.shields.io/github/license/rejvban/nestjs-twilio)](https://raw.githubusercontent.com/lkaric/nestjs-twilio/master/LICENSE)
 
 Implementing the `TwilioModule` from this package you gain access to Twilio client through dependency injection with minimal setup.
-
-## Upgrade from 3.2.1 to 4.0.0
-
-The Twilio SDK 4.0.0 introduces breaking changes to the SDK - Please refer to [here](https://github.com/twilio/twilio-node/blob/4.0.0-rc.5/UPGRADE.md) for upgrade guide.
 
 ## Instalation
 
@@ -89,8 +88,6 @@ export class AppService {
 
 For full Client API see Twilio Node SDK reference [here](https://www.twilio.com/docs/libraries/node)
 
-## :rotating_light: `@InjectTwilio()` decorator has been deprecated in v3
-
 ## Testing
 
-Example of testing can be found [here](https://github.com/rejvban/nestjs-twilio/blob/master/lib/__tests__/twilio.module.test.ts).
+Example of testing can be found [here](https://github.com/lkaric/nestjs-twilio/blob/master/lib/__tests__/twilio.module.test.ts).
