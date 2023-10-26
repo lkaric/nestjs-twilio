@@ -32,7 +32,7 @@ jobs:
           run_install: false
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile --prefer-offline --prod --ignore-scripts
+        run: pnpm install --frozen-lockfile --prefer-offline --ignore-scripts
 
       - name: Verify the integrity of provenance attestations and registry signatures for installed dependencies
         run: pnpm audit
