@@ -1,6 +1,6 @@
 {
   "name": "nestjs-twilio",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "type": "module",
   "description": "Injectable Twilio client for NestJS, with webhook signature validation, TwiML responses, and access tokens",
   "license": "MIT",

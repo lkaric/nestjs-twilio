@@ -1,3 +1,10 @@
+## [5.0.1](https://github.com/lkaric/nestjs-twilio/compare/v5.0.0...v5.0.1) (2026-09-22)
+
+
+### Bug Fixes
+
+* **exception:** stop treating every Nest HttpException as a Twilio error ([#134](https://github.com/lkaric/nestjs-twilio/issues/134)) ([802d3f3](https://github.com/lkaric/nestjs-twilio/commit/802d3f3117b46bf8afd7fb6c7a57bad0f4b41ed9))
+
 # [5.0.0](https://github.com/lkaric/nestjs-twilio/compare/v4.4.0...v5.0.0) (2026-09-22)
 
 
