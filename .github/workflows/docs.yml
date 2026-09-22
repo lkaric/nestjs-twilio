@@ -1,16 +1,13 @@
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 name: Docs
 
+# Deploy only. Pull requests are covered by the `Docs site` job in ci.yml,
+# which gates the required CI check — so a broken site is caught at review
+# time, not at deploy time.
 on:
   push:
     branches: [master]
-    # Only rebuild when something the site renders actually changed.
-    paths:
-      - 'docs/**'
-      - 'README.md'
-      - 'MIGRATION.md'
-      - '.github/workflows/docs.yml'
-  pull_request:
+    # Only redeploy when something the site actually renders changed.
     paths:
       - 'docs/**'
       - '.github/workflows/docs.yml'
@@ -39,14 +36,10 @@ jobs:
       - name: Build documentation site
         run: pnpm docs:build
 
-      # Only meaningful on master, but running it on pull requests too means a
-      # broken site fails review rather than deployment.
       - name: Configure GitHub Pages
-        if: github.ref == 'refs/heads/master'
         uses: actions/configure-pages@v5
 
       - name: Upload Pages artifact
-        if: github.ref == 'refs/heads/master'
         uses: actions/upload-pages-artifact@v4
         with:
           path: docs/dist

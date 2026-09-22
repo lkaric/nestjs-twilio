@@ -13,7 +13,7 @@
     "type": "git",
     "url": "git+https://github.com/lkaric/nestjs-twilio.git"
   },
-  "homepage": "https://lkaric.github.io/nestjs-twilio",
+  "homepage": "https://nestjs-twilio.lazar.sh",
   "bugs": "https://github.com/lkaric/nestjs-twilio/issues",
   "private": false,
   "keywords": [

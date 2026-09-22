@@ -155,12 +155,27 @@ jobs:
       - name: Verify both builds load and expose the same surface
         run: pnpm check:runtime
 
+  # The documentation site is part of the repository's build, so a broken site
+  # must fail review rather than fail at deploy time. docs.yml only deploys.
+  docs:
+    name: Docs site
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up toolchain
+        uses: ./.github/actions/setup
+
+      - name: Build documentation site
+        run: pnpm docs:build
+
   # Single required status check. Branch protection points at this job only,
   # so adding or renaming a matrix leg never requires editing branch rules.
   ci:
     name: CI
     runs-on: ubuntu-latest
-    needs: [lint, type-check, test, smoke, build, package]
+    needs: [lint, type-check, test, smoke, build, package, docs]
     if: always()
     steps:
       - name: Verify all upstream jobs succeeded

@@ -143,3 +143,34 @@ constructor and is optional.
 These come directly from the `twilio` package's `ClientOpts` type — consult
 the [Twilio Node.js SDK documentation](https://www.twilio.com/docs/libraries/node) for
 behavior details.
+
+## Exported types and utilities
+
+Everything below is part of the public API and therefore covered by semver.
+
+| Export                         | Kind      | Purpose                                                                                                                                                                                  |
+| ------------------------------ | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TwilioClientOpts`             | interface | The credential fields plus every Twilio SDK `ClientOpts` key, flattened. `TwilioModuleOptions` extends it.                                                                               |
+| `TwilioModuleDefinitionExtras` | interface | Module-level configuration that is _not_ injected into providers — currently just `isGlobal`. Kept separate so module wiring never leaks into the options object your providers receive. |
+| `validateTwilioOptions`        | function  | The bootstrap validation the module runs for you. Exported so you can validate configuration yourself before constructing a module — useful in a config factory.                         |
+| `createTwilioClient`           | function  | The factory the module uses to build a client. Exported for tests and for advanced cases where you need a client outside Nest's DI container.                                            |
+
+```ts
+import { createTwilioClient, validateTwilioOptions } from 'nestjs-twilio';
+
+const options = {
+  accountSid: process.env.TWILIO_ACCOUNT_SID!,
+  authToken: process.env.TWILIO_AUTH_TOKEN!,
+};
+
+// Throws BadRequestException naming the offending field; never echoes secrets.
+validateTwilioOptions(options);
+
+const client = createTwilioClient(options);
+```
+
+:::note
+`validateTwilioOptions` runs automatically inside `createTwilioClient` and
+during module initialisation. Calling it yourself is only useful when you want
+to fail earlier, for example while loading configuration.
+:::

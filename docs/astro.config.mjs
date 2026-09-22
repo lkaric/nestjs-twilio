@@ -3,8 +3,12 @@ import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 
 export default defineConfig({
-  site: 'https://lkaric.github.io',
-  base: '/nestjs-twilio',
+  // Served from a custom apex-subdomain, so the site lives at the root.
+  // There is deliberately no `base` here: setting one would prefix every asset
+  // and link with a path segment the custom domain does not serve.
+  // The CNAME file in docs/public/ is copied verbatim into the build output,
+  // which is what GitHub Pages reads to bind the domain.
+  site: 'https://nestjs-twilio.lazar.sh',
   integrations: [
     starlight({
       title: 'nestjs-twilio',
@@ -17,7 +21,8 @@ export default defineConfig({
         },
       ],
       editLink: {
-        baseUrl: 'https://github.com/lkaric/nestjs-twilio/edit/main/docs/',
+        // This repository's default branch is `master`, not `main`.
+        baseUrl: 'https://github.com/lkaric/nestjs-twilio/edit/master/docs/',
       },
       sidebar: [
         {

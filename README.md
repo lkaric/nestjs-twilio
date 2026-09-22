@@ -27,6 +27,23 @@ Full-featured NestJS integration for Twilio with:
 npm install nestjs-twilio twilio
 ```
 
+### Requirements
+
+|                                  | Version        |
+| -------------------------------- | -------------- |
+| Node.js                          | `>=20.19`      |
+| `@nestjs/common`, `@nestjs/core` | `^11 \|\| ^12` |
+| `twilio`                         | `^5 \|\| ^6`   |
+
+`reflect-metadata` and `rxjs` are peer dependencies too, and are already
+present in any Nest application. `@nestjs/terminus` is an optional peer.
+
+> **On the Node floor.** The test suite runs on Node 22 and 24. Node 20.19 is
+> supported and CI verifies on every run that both the CommonJS and ES module
+> builds load there with identical export surfaces, but the unit suite itself
+> cannot execute on 20.x — Vitest 5 requires `^22.12 || ^24 || >=26`. If you
+> run Node 20, prefer pinning a patch release you have exercised yourself.
+
 ## Quick Start
 
 ### 1. Register the module
@@ -200,7 +217,9 @@ Setup, conventions, commit format and the checks CI runs are documented in
 
 ## Support
 
+- 📖 [Documentation](https://nestjs-twilio.lazar.sh)
 - 🐛 [Report an issue](https://github.com/lkaric/nestjs-twilio/issues)
+- 🔒 [Report a vulnerability](./SECURITY.md)
 - 💬 [Discussions](https://github.com/lkaric/nestjs-twilio/discussions)
 
 ## License
