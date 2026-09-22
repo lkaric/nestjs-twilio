@@ -1,37 +1,35 @@
 <p align="center">
-  <h3 align="center">
-    nestjs-twilio
-  </h3>
-
+  <h3 align="center">nestjs-twilio</h3>
   <p align="center">
-    <img src="https://avatars1.githubusercontent.com/u/43827489?s=400&u=45ac0ac47d40b6d8f277c96bdf00244c10508aef&v=4"/>
+    <img src="https://www.twilio.com/content/dam/twilio-com/global/en/brand/mark.png" width="80"/>
   </p>
-
   <p align="center">
-    Injectable Twilio client for <a href="https://nestjs.com/">Nestjs</a>.
+    Injectable Twilio client for NestJS
   </p>
 </p>
 
 [![npm version](https://img.shields.io/npm/v/nestjs-twilio)](https://www.npmjs.com/package/nestjs-twilio)
-[![miniziped size](https://badgen.net/bundlephobia/minzip/nestjs-twilio)](https://bundlephobia.com/result?p=nestjs-twilio)
-[![tree shaking](https://badgen.net/bundlephobia/tree-shaking/react-colorful)](https://github.com/lkaric/nestjs-twilio)
-[![MIT licensed](https://img.shields.io/github/license/rejvban/nestjs-twilio)](https://raw.githubusercontent.com/lkaric/nestjs-twilio/master/LICENSE)
+[![Build Status](https://github.com/lkaric/nestjs-twilio/actions/workflows/build.yml/badge.svg)](https://github.com/lkaric/nestjs-twilio/actions)
+[![MIT License](https://img.shields.io/github/license/lkaric/nestjs-twilio)](LICENSE)
 
-Implementing the `TwilioModule` from this package you gain access to Twilio client through dependency injection with minimal setup.
+Full-featured NestJS integration for Twilio with:
 
-## Instalation
+- ✅ Dependency injection of Twilio SDK
+- ✅ Webhook signature validation
+- ✅ TwiML response serialization
+- ✅ Automatic error mapping
+- ✅ Multi-account / subaccount clients
+- ✅ TypeScript-first with full type support
+
+## Installation
 
 ```bash
-$ npm install --save nestjs-twilio
+npm install nestjs-twilio twilio
 ```
 
-```bash
-$ yarn add nestjs-twilio
-```
+## Quick Start
 
-## Getting Started
-
-To use Twilio client we need to register module for example in app.module.ts
+### 1. Register the module
 
 ```typescript
 import { TwilioModule } from 'nestjs-twilio';
@@ -47,47 +45,164 @@ import { TwilioModule } from 'nestjs-twilio';
 export class AppModule {}
 ```
 
-If you are using the `@nestjs/config package` from nest, you can use the `ConfigModule` using the `registerAsync()` function to inject your environment variables like this in your custom module:
+### 2. Inject the client
 
 ```typescript
-import { TwilioModule } from 'nestjs-twilio';
+import { Injectable } from '@nestjs/common';
+import { InjectTwilio } from 'nestjs-twilio';
+import { Twilio } from 'twilio';
 
+@Injectable()
+export class SmsService {
+  constructor(@InjectTwilio() private twilioClient: Twilio) {}
+
+  async sendSms(to: string, body: string) {
+    return this.twilioClient.messages.create({
+      from: process.env.TWILIO_PHONE_NUMBER,
+      to,
+      body,
+    });
+  }
+}
+```
+
+## Key Features
+
+### Webhook Signature Validation
+
+Automatically validate incoming Twilio webhooks:
+
+```typescript
+import { Controller, Post, Body } from '@nestjs/common';
+import { TwilioWebhook, TwilioWebhookRequest } from 'nestjs-twilio';
+
+@Controller('webhooks/sms')
+export class WebhookController {
+  @Post()
+  @TwilioWebhook()
+  handleIncomingSms(@Body() body: TwilioWebhookRequest) {
+    console.log('From:', body.From);
+    console.log('Body:', body.Body);
+  }
+}
+```
+
+### TwiML Responses
+
+Return TwiML directly from controllers:
+
+```typescript
+import { Controller, Post, UseInterceptors } from '@nestjs/common';
+import { TwimlInterceptor } from 'nestjs-twilio';
+import { MessagingResponse } from 'twilio/lib/twiml/MessagingResponse';
+
+@Controller('sms')
+export class SmsController {
+  @Post('reply')
+  @UseInterceptors(TwimlInterceptor)
+  async replySms() {
+    const response = new MessagingResponse();
+    response.message('Hello, thanks for texting!');
+    return response;
+  }
+}
+```
+
+### Error Handling
+
+Twilio errors are automatically mapped to HTTP exceptions:
+
+```typescript
+import { Controller, UseFilters } from '@nestjs/common';
+import { TwilioExceptionFilter } from 'nestjs-twilio';
+
+@Controller('api')
+@UseFilters(TwilioExceptionFilter)
+export class ApiController {
+  // Twilio SDK errors → HTTP 4xx/5xx responses
+}
+```
+
+### Multiple Accounts
+
+Register additional named clients for subaccounts, then inject them by name:
+
+```typescript
 @Module({
   imports: [
-    TwilioModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: (cfg: ConfigService) => ({
-        accountSid: cfg.get('TWILIO_ACCOUNT_SID'),
-        authToken: cfg.get('TWILIO_AUTH_TOKEN'),
-      }),
-      inject: [ConfigService],
+    TwilioModule.forRoot({
+      accountSid: process.env.TWILIO_ACCOUNT_SID,
+      authToken: process.env.TWILIO_AUTH_TOKEN,
+    }),
+    TwilioModule.forFeature('billing', {
+      accountSid: process.env.TWILIO_BILLING_ACCOUNT_SID,
+      authToken: process.env.TWILIO_BILLING_AUTH_TOKEN,
     }),
   ],
 })
 export class AppModule {}
 ```
 
-Example usage in service.
-
 ```typescript
-import { InjectTwilio, TwilioService } from 'nestjs-twilio';
-
 @Injectable()
-export class AppService {
-  public constructor(private readonly twilioService: TwilioService) {}
-
-  async sendSMS() {
-    return this.twilioService.client.messages.create({
-      body: 'SMS Body, sent to the phone!',
-      from: TWILIO_PHONE_NUMBER,
-      to: TARGET_PHONE_NUMBER,
-    });
-  }
+export class BillingService {
+  constructor(@InjectTwilio('billing') private readonly twilio: Twilio) {}
 }
 ```
 
-For full Client API see Twilio Node SDK reference [here](https://www.twilio.com/docs/libraries/node)
+`forFeatureAsync(name, options)` is available for factory-based configuration.
 
-## Testing
+## Configuration
 
-Example of testing can be found [here](https://github.com/lkaric/nestjs-twilio/blob/master/lib/__tests__/twilio.module.test.ts).
+### Synchronous Registration
+
+```typescript
+TwilioModule.forRoot({
+  accountSid: 'ACxxxxxxx',
+  authToken: 'auth_token_here',
+  webhookAuthToken: 'webhook_token_override', // optional
+  webhookUrl: 'https://example.com/webhooks', // optional for proxy scenarios
+  region: 'ie1', // optional
+  edge: 'sydney', // optional
+  isGlobal: true, // optional - make module globally available
+});
+```
+
+### Asynchronous Registration
+
+```typescript
+TwilioModule.forRootAsync({
+  imports: [ConfigModule],
+  useFactory: async (configService: ConfigService) => ({
+    accountSid: configService.get('TWILIO_ACCOUNT_SID'),
+    authToken: configService.get('TWILIO_AUTH_TOKEN'),
+  }),
+  inject: [ConfigService],
+});
+```
+
+## Migration from v4
+
+v5.0.0 introduces breaking changes. See [MIGRATION.md](./MIGRATION.md) for a complete upgrade guide.
+
+**Key changes:**
+
+- `twilio` moved to `peerDependencies` — install it alongside this package
+- Nest peer range is now `^11 || ^12`
+- Minimum Node.js is 20.19
+- Client options are flat: `options: { region }` is now `region`
+- Credentials are validated at bootstrap instead of failing later inside the SDK
+
+## Contributing
+
+Setup, conventions, commit format and the checks CI runs are documented in
+[CONTRIBUTING.md](./CONTRIBUTING.md).
+
+## Support
+
+- 🐛 [Report an issue](https://github.com/lkaric/nestjs-twilio/issues)
+- 💬 [Discussions](https://github.com/lkaric/nestjs-twilio/discussions)
+
+## License
+
+MIT © [Lazar Karic](https://lazar.sh)

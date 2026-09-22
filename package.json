@@ -69,8 +69,6 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "check:package": "pnpm build && publint --strict && attw --pack . && pnpm check:runtime",
-    "docs:dev": "pnpm --filter ./docs dev",
-    "docs:build": "pnpm --filter ./docs build",
     "clean:dist": "rimraf dist",
     "clean:test": "rimraf coverage",
     "prepare": "lefthook install || true",
