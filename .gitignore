@@ -1,5 +1,8 @@
 # compiled output
 /dist
+# Leading slash anchors to the repo root, so the example app's build
+# output needs its own rule.
+examples/*/dist/
 /node_modules
 
 # Logs
