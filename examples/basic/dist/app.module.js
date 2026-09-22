@@ -26,11 +26,12 @@ AppModule = __decorate([
                 // Set this when the app runs behind a proxy or tunnel that rewrites the
                 // Host header, so the guard reconstructs the URL Twilio actually signed.
                 webhookUrl: process.env.PUBLIC_URL,
-                isGlobal: true,
             }),
-            // A second, independently credentialed client for a subaccount. Injected
-            // with @InjectTwilio('billing').
-            TwilioModule.forFeature('billing', {
+            // A second, independently credentialed client for a subaccount. It
+            // inherits everything above that it does not override — region, edge,
+            // logLevel and so on — and is injected with @InjectTwilio('billing').
+            TwilioModule.registerClient({
+                name: 'billing',
                 accountSid: process.env.TWILIO_BILLING_ACCOUNT_SID ?? 'ACyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy',
                 authToken: process.env.TWILIO_BILLING_AUTH_TOKEN ?? 'example_billing_token',
             }),

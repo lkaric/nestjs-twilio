@@ -1,17 +1,18 @@
 ---
 title: Multi-Account Clients
-description: Register additional named Twilio clients for subaccounts with forFeature and forFeatureAsync.
+description: Register additional named Twilio clients for subaccounts with registerClient and registerClientAsync.
 ---
 
-Applications that operate multiple Twilio (sub)accounts — for example
-billing calls routed through a dedicated subaccount — can register extra
-named clients alongside the default one registered by `forRoot()`.
+`TwilioModule.forRoot()` configures the default client **and** the options every
+named client inherits. `TwilioModule.registerClient()` adds further clients —
+typically Twilio subaccounts — which inherit those options and override only
+what differs.
 
-## Registering a named client
+This mirrors `BullModule.forRoot()` / `BullModule.registerQueue()` in
+`@nestjs/bullmq`, where the root registration holds shared configuration and
+each named registration inherits it.
 
-`TwilioModule.forFeature(name, options)` must be called after `forRoot()`
-or `forRootAsync()` in the same module tree, and registers an independent
-client under the given name:
+## Basic usage
 
 ```ts
 import { Module } from '@nestjs/common';
@@ -22,8 +23,11 @@ import { TwilioModule } from 'nestjs-twilio';
     TwilioModule.forRoot({
       accountSid: process.env.TWILIO_ACCOUNT_SID,
       authToken: process.env.TWILIO_AUTH_TOKEN,
+      region: 'ie1',
+      edge: 'dublin',
     }),
-    TwilioModule.forFeature('billing', {
+    TwilioModule.registerClient({
+      name: 'billing',
       accountSid: process.env.TWILIO_BILLING_ACCOUNT_SID,
       authToken: process.env.TWILIO_BILLING_AUTH_TOKEN,
     }),
@@ -32,72 +36,145 @@ import { TwilioModule } from 'nestjs-twilio';
 export class AppModule {}
 ```
 
-`forFeature`'s `options` argument accepts the same flat
-`TwilioModuleOptions` shape as `forRoot` — it is a full, independent client
-configuration, not a partial override merged with the root config.
+The `billing` client uses its own credentials but inherits `region: 'ie1'` and
+`edge: 'dublin'` from the root registration.
 
 ## Injecting a named client
 
-Pass the same name to `@InjectTwilio()`:
-
 ```ts
 import { Injectable } from '@nestjs/common';
-import { InjectTwilio } from 'nestjs-twilio';
-import type { Twilio } from 'twilio';
+import { InjectTwilio, type TwilioClient } from 'nestjs-twilio';
 
 @Injectable()
 export class BillingService {
-  constructor(@InjectTwilio('billing') private readonly twilio: Twilio) {}
+  constructor(@InjectTwilio('billing') private readonly twilio: TwilioClient) {}
 }
 ```
 
-Calling `@InjectTwilio()` with no argument continues to inject the default
-client registered by `forRoot()` / `forRootAsync()`.
+Names are matched case-insensitively, so `'Billing'` and `'billing'` resolve to
+the same client. `@InjectTwilio()` with no argument resolves the default client
+from `forRoot()`.
 
-## Async registration
+To resolve the token directly — when wiring a provider by hand, for example —
+use `getTwilioClientToken('billing')`.
 
-`forFeatureAsync(name, options)` mirrors `forRootAsync()` for named clients,
-resolving options from a factory with injected dependencies:
+## What is inherited
+
+Every option from `forRoot()` is inherited unless the named client overrides it
+with a **defined** value.
+
+| Registration           | Result                        |
+| ---------------------- | ----------------------------- |
+| Key omitted            | Inherited from `forRoot()`    |
+| Key set to `undefined` | Inherited from `forRoot()`    |
+| Key set to a value     | Overrides the inherited value |
+
+:::caution[`undefined` inherits, it does not clear]
+This differs deliberately from `@nestjs/bullmq`, which merges with a plain
+object spread where a present-but-`undefined` key clears the inherited value.
+
+Configuration is usually read from the environment, and
+`region: process.env.TWILIO_REGION` is `undefined` whenever that variable is
+unset. Under a plain spread that would silently discard an inherited region and
+send traffic to Twilio's default edge.
+
+Nothing is lost: `region` and `edge` are named values, so returning one client
+to the default is expressed by naming it.
+:::
 
 ```ts
-TwilioModule.forFeatureAsync('billing', {
+// Inherits region 'ie1' even though the key is present.
+TwilioModule.registerClient({
+  name: 'billing',
+  accountSid,
+  authToken,
+  region: process.env.BILLING_REGION, // undefined when unset
+});
+
+// Deliberately overrides, routing this client through Australia.
+TwilioModule.registerClient({ name: 'au', accountSid, authToken, region: 'au1' });
+```
+
+## Asynchronous registration
+
+`registerClientAsync()` accepts the same shape as Nest's own generated `*Async`
+methods. Use exactly one of `useFactory`, `useClass` or `useExisting`.
+
+```ts
+TwilioModule.registerClientAsync({
+  name: 'billing',
   imports: [ConfigModule],
   useFactory: (config: ConfigService) => ({
-    accountSid: config.get('TWILIO_BILLING_ACCOUNT_SID'),
-    authToken: config.get('TWILIO_BILLING_AUTH_TOKEN'),
+    accountSid: config.getOrThrow('TWILIO_BILLING_ACCOUNT_SID'),
+    authToken: config.getOrThrow('TWILIO_BILLING_AUTH_TOKEN'),
   }),
   inject: [ConfigService],
 });
 ```
 
-## How client tokens work
-
-Each named client is registered under a DI token generated by
-`getTwilioClientToken(name)`. `InjectTwilio(name)` is a thin wrapper around
-`@Inject(getTwilioClientToken(name))`:
+With a factory class, implement `TwilioClientOptionsFactory`:
 
 ```ts
-import { Inject } from '@nestjs/common';
-import { getTwilioClientToken } from 'nestjs-twilio';
-import type { Twilio } from 'twilio';
+import { Injectable } from '@nestjs/common';
+import type { TwilioClientOptionsFactory, TwilioModuleOptions } from 'nestjs-twilio';
 
-@Inject(getTwilioClientToken('billing'))
-private readonly billingClient: Twilio;
+@Injectable()
+export class BillingTwilioConfig implements TwilioClientOptionsFactory {
+  constructor(private readonly config: ConfigService) {}
+
+  createTwilioClientOptions(): Partial<TwilioModuleOptions> {
+    return {
+      accountSid: this.config.getOrThrow('TWILIO_BILLING_ACCOUNT_SID'),
+      authToken: this.config.getOrThrow('TWILIO_BILLING_AUTH_TOKEN'),
+    };
+  }
+}
 ```
 
-Calling `getTwilioClientToken()` without a name returns the token used for
-the default client registered by `forRoot()`.
+```ts
+TwilioModule.registerClientAsync({ name: 'billing', useClass: BillingTwilioConfig });
+```
 
-## Reference
+Options resolved asynchronously inherit from `forRoot()` exactly as synchronous
+ones do.
 
-### Exports
+## Without a root registration
 
-- `TwilioModule.forFeature(name, options)` — registers a named client
-  synchronously. Returns a `DynamicModule`.
-- `TwilioModule.forFeatureAsync(name, { useFactory, inject?, imports? })` —
-  registers a named client from an async factory. Returns a
-  `DynamicModule`.
-- `InjectTwilio(name?)` — parameter decorator injecting the default client
-  (no argument) or a named client.
-- `getTwilioClientToken(name?)` — returns the `symbol` DI token for the
-  default or a named client.
+`registerClient()` works on its own, which suits a platform where every tenant
+is a subaccount and there is no meaningful primary account. Each registration
+must then carry full credentials, since there is nothing to inherit.
+
+```ts
+@Module({
+  imports: [
+    TwilioModule.registerClient({ name: 'tenant-a', accountSid: '…', authToken: '…' }),
+    TwilioModule.registerClient({ name: 'tenant-b', accountSid: '…', authToken: '…' }),
+  ],
+})
+export class AppModule {}
+```
+
+:::note
+Without `forRoot()` there is no default client, so `TwilioService` and
+`@InjectTwilio()` with no name are not provided. Injecting either fails at
+bootstrap rather than resolving to something half-configured.
+:::
+
+## Global registration
+
+`forRoot()` always registers globally, as `TypeOrmCoreModule`, Mongoose's core
+module and `BullModule.forRoot()` all do. Import it once in your root module
+and every client is available application-wide.
+
+This is also what makes inheritance work: a named client is registered as its
+own module, and a non-global root would be invisible to it.
+
+## API
+
+- `TwilioModule.forRoot(options)` — the default client, and the options named
+  clients inherit
+- `TwilioModule.forRootAsync({ useFactory | useClass | useExisting, inject?, imports? })`
+- `TwilioModule.registerClient({ name, ...overrides })` — an additional named client
+- `TwilioModule.registerClientAsync({ name, useFactory | useClass | useExisting, inject?, imports? })`
+- `getTwilioClientToken(name?)` — the DI token for a client
+- `@InjectTwilio(name?)` — inject a client

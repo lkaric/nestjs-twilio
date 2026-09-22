@@ -29,7 +29,7 @@ let SmsController = class SmsController {
     }
     /**
      * Proves the two registered clients are distinct instances with their own
-     * credentials — the point of forFeature().
+     * credentials — the point of registerClient().
      */
     accounts() {
         return {

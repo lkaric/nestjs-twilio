@@ -58,29 +58,49 @@ export interface TwilioClientOpts extends ClientOpts {
 }
 
 /**
- * Module-level configuration applied to the generated `DynamicModule`, rather
- * than injected into providers.
+ * A named client registered with `TwilioModule.registerClient()`.
  *
- * `ConfigurableModuleBuilder` merges these keys into the single object passed
- * to `forRoot()`, but keeps them out of the options object your providers
- * receive — so module wiring never leaks into application code.
+ * Every field except `name` is optional: anything omitted is inherited from
+ * the options given to `forRoot()`. A field set to `undefined` also inherits —
+ * only a defined value overrides. Supply full credentials when no `forRoot()`
+ * is registered.
  *
  * @example
  * ```ts
- * // `isGlobal` configures the module; accountSid and authToken configure the client.
- * TwilioModule.forRoot({
- *   accountSid: process.env.TWILIO_ACCOUNT_SID!,
- *   authToken: process.env.TWILIO_AUTH_TOKEN!,
- *   isGlobal: true,
+ * // Inherits region and edge from forRoot; overrides the credentials.
+ * TwilioModule.registerClient({
+ *   name: 'billing',
+ *   accountSid: process.env.TWILIO_BILLING_ACCOUNT_SID,
+ *   authToken: process.env.TWILIO_BILLING_AUTH_TOKEN,
  * });
  * ```
  */
-export interface TwilioModuleDefinitionExtras {
+export interface TwilioClientRegistration extends Partial<TwilioModuleOptions> {
   /**
-   * Make the module globally available. Default: false.
-   * This is module-level config, not passed to injected providers.
+   * Identifies the client. Inject it with `@InjectTwilio(name)`, or resolve
+   * its token with `getTwilioClientToken(name)`. Matched case-insensitively.
    */
-  isGlobal?: boolean;
+  name: string;
+}
+
+/**
+ * Supplies options for a named client from a class, for
+ * `registerClientAsync({ useClass })` or `registerClientAsync({ useExisting })`.
+ *
+ * @example
+ * ```ts
+ * @Injectable()
+ * export class BillingTwilioConfig implements TwilioClientOptionsFactory {
+ *   constructor(private readonly config: ConfigService) {}
+ *
+ *   createTwilioClientOptions(): Partial<TwilioModuleOptions> {
+ *     return { accountSid: this.config.getOrThrow('BILLING_SID') };
+ *   }
+ * }
+ * ```
+ */
+export interface TwilioClientOptionsFactory {
+  createTwilioClientOptions(): Partial<TwilioModuleOptions> | Promise<Partial<TwilioModuleOptions>>;
 }
 
 /**

@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Twilio } from 'twilio';
 
 import { TwilioModule, TwilioService } from '../module/index.js';
+import { MODULE_OPTIONS_TOKEN } from '../utils/twilio.module-definition.js';
 
 describe('TwilioService', () => {
   let module: TestingModule;
@@ -58,15 +59,17 @@ describe('TwilioService', () => {
     });
   });
 
-  describe('global module', () => {
-    it('should support global module registration', async () => {
-      const globalModule = await Test.createTestingModule({
-        imports: [TwilioModule.forRoot({ ...testConfig, isGlobal: true })],
-      }).compile();
+  describe('global registration', () => {
+    // forRoot() always registers globally, as TypeOrmCoreModule, Mongoose's
+    // core module and BullModule.forRoot() all do. It is also what lets a
+    // separately-registered named client reach the shared options.
+    it('marks the dynamic module as global', () => {
+      expect(TwilioModule.forRoot(testConfig).global).toBe(true);
+      expect(TwilioModule.forRootAsync({ useFactory: () => testConfig }).global).toBe(true);
+    });
 
-      const globalService = globalModule.get(TwilioService);
-      expect(globalService.client).toBeInstanceOf(Twilio);
-      await globalModule.close();
+    it('exports the options token so named clients can inherit it', () => {
+      expect(TwilioModule.forRoot(testConfig).exports).toContain(MODULE_OPTIONS_TOKEN);
     });
   });
 });

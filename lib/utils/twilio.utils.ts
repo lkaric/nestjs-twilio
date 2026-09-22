@@ -53,33 +53,82 @@ export function validateTwilioOptions(options: typeof OPTIONS_TYPE): void {
 }
 
 /**
- * Factory function to create a Twilio SDK client.
+ * Merge a named client's overrides onto the shared options from `forRoot()`.
+ *
+ * Only *defined* values override. A key that is present but `undefined`
+ * inherits, rather than clearing the inherited value.
+ *
+ * This deliberately differs from the plain object spread `@nestjs/bullmq`
+ * uses. The common way to configure a client is from the environment, and
+ * `region: process.env.TWILIO_REGION` is `undefined` whenever that variable is
+ * unset — under a plain spread that silently clears an inherited region and
+ * sends traffic to the default edge. Nothing is lost by inheriting instead:
+ * `region` and `edge` are named values, so returning one client to the default
+ * is expressed by naming it (`region: 'us1'`) rather than by erasing it.
+ *
+ * @param shared - Options from `forRoot()`, or undefined when none is registered.
+ * @param overrides - The named client's own options.
+ *
+ * @example
+ * ```ts
+ * mergeClientOptions(
+ *   { accountSid: 'ACroot', authToken: 'r', region: 'ie1' },
+ *   { name: 'billing', accountSid: 'ACbilling', authToken: 'b', region: undefined },
+ * );
+ * // => { accountSid: 'ACbilling', authToken: 'b', region: 'ie1' }
+ * ```
+ */
+export function mergeClientOptions<S extends object, O extends object>(
+  shared: S | undefined,
+  overrides: O
+): S & O {
+  const merged: Record<string, unknown> = { ...(shared ?? {}) };
+
+  for (const [key, value] of Object.entries(overrides)) {
+    if (key === 'name') continue;
+    if (value !== undefined) merged[key] = value;
+  }
+
+  return merged as S & O;
+}
+
+/**
+ * Build a Twilio SDK client from module options.
+ *
+ * Credentials are passed to the constructor; module-level keys that the SDK
+ * does not understand are stripped, and everything else is forwarded as
+ * `ClientOpts`.
+ *
+ * @throws BadRequestException When required credentials are missing or malformed.
  *
  * @example
  * ```ts
  * const client = createTwilioClient({
  *   accountSid: 'ACxxxxxxx',
  *   authToken: 'auth_token_here',
+ *   region: 'ie1',
  * });
  * ```
  */
 export function createTwilioClient(options: typeof OPTIONS_TYPE): TwilioClient {
   validateTwilioOptions(options);
 
-  // Use authToken if available, otherwise use apiKey
   const credential = options.authToken || options.apiKey || '';
 
-  // Extract Twilio-specific config and remove auth fields (they go to constructor)
   const {
     accountSid,
+    // Credentials go to the constructor, not into ClientOpts.
     authToken: _authToken,
     apiKey: _apiKey,
     apiSecret: _apiSecret,
+    // Module-level settings the Twilio SDK has no concept of. Without this
+    // they were forwarded into ClientOpts and reached the SDK constructor.
+    webhookAuthToken: _webhookAuthToken,
+    webhookUrl: _webhookUrl,
     ...clientOpts
   } = options;
 
-  const client = new twilio.Twilio(accountSid, credential, clientOpts);
-  return client;
+  return new twilio.Twilio(accountSid, credential, clientOpts);
 }
 
 /**
@@ -93,7 +142,7 @@ export function createTwilioClient(options: typeof OPTIONS_TYPE): TwilioClient {
  * Names are matched case-insensitively, and the registry key is namespaced so
  * it cannot collide with symbols registered by other packages.
  *
- * @param name - The feature name passed to `forFeature()`. Omit for the
+ * @param name - The name passed to `registerClient()`. Omit for the
  * default client registered by `forRoot()`.
  *
  * @example

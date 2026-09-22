@@ -3,7 +3,7 @@ import { InjectTwilio, getTwilioClientToken, type TwilioClient } from 'nestjs-tw
 
 @Injectable()
 export class BillingService {
-  // Resolves the client registered by TwilioModule.forFeature('billing'), not
+  // Resolves the client registered by TwilioModule.registerClient({ name: 'billing' }), not
   // the default one. The name must match the registration.
   constructor(@InjectTwilio('billing') private readonly twilio: TwilioClient) {}
 

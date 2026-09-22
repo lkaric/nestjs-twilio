@@ -151,7 +151,8 @@ Register additional named clients for subaccounts, then inject them by name:
       accountSid: process.env.TWILIO_ACCOUNT_SID,
       authToken: process.env.TWILIO_AUTH_TOKEN,
     }),
-    TwilioModule.forFeature('billing', {
+    TwilioModule.registerClient({
+      name: 'billing',
       accountSid: process.env.TWILIO_BILLING_ACCOUNT_SID,
       authToken: process.env.TWILIO_BILLING_AUTH_TOKEN,
     }),
@@ -167,7 +168,9 @@ export class BillingService {
 }
 ```
 
-`forFeatureAsync(name, options)` is available for factory-based configuration.
+Named clients inherit everything from `forRoot()` that they do not override,
+so transport settings such as `region` and `edge` stay consistent across
+accounts. `registerClientAsync()` is available for factory-based configuration.
 
 ## Configuration
 
@@ -181,7 +184,6 @@ TwilioModule.forRoot({
   webhookUrl: 'https://example.com/webhooks', // optional for proxy scenarios
   region: 'ie1', // optional
   edge: 'sydney', // optional
-  isGlobal: true, // optional - make module globally available
 });
 ```
 

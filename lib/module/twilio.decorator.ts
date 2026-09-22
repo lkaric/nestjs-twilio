@@ -5,9 +5,9 @@ import { getTwilioClientToken } from '../utils/index.js';
 /**
  * Parameter decorator for injecting a Twilio client.
  *
- * Injects the Twilio SDK client directly, or a named client registered via `forFeature()`.
+ * Injects the Twilio SDK client directly, or a named client registered via `registerClient()`.
  *
- * @param name - Optional name of a client registered via `forFeature(name, options)`
+ * @param name - Optional name of a client registered via `registerClient({ name, ... })`
  *
  * @example
  * ```ts

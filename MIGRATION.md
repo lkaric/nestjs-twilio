@@ -16,6 +16,7 @@ If you are not ready to move, v4 keeps working: pin `nestjs-twilio@^4`.
 | 5   | Client options are flat, not nested under `options`  | Move `options: { … }` fields up one level  |
 | 6   | Credentials are validated at bootstrap               | Ensure they are defined before `forRoot`   |
 | 7   | The package now has an `exports` map                 | Replace deep imports with the package root |
+| 8   | `isGlobal` removed; the module is always global      | Delete `isGlobal` from `forRoot()`         |
 
 ---
 
@@ -123,12 +124,33 @@ Everything public is exported from the package root.
 
 ---
 
+## 8. `isGlobal` is gone — the module is always global
+
+v4 accepted an `isGlobal` flag, defaulting to `false`. v5 removes it and always
+registers globally, matching `TypeOrmCoreModule`, Mongoose's core module and
+`BullModule.forRoot()`.
+
+```diff
+  TwilioModule.forRoot({
+    accountSid: process.env.TWILIO_ACCOUNT_SID,
+    authToken: process.env.TWILIO_AUTH_TOKEN,
+-   isGlobal: true,
+  })
+```
+
+Leaving `isGlobal` in place is a type error, so the compiler finds every
+occurrence for you.
+
+Beyond convention, this is what lets named clients registered with
+`registerClient()` inherit the options from `forRoot()`: each named client is
+its own module, and a non-global root would be invisible to it.
+
+---
+
 ## What did _not_ change
 
 - `TwilioModule.forRoot()` and `TwilioModule.forRootAsync()` keep their names
   and call shapes.
-- `isGlobal` is still a top-level key on the options object:
-  `TwilioModule.forRoot({ accountSid, authToken, isGlobal: true })`.
 - `TwilioService` and its `client` getter are unchanged.
 
 ---

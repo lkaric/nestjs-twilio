@@ -28,13 +28,13 @@ Twilio account — only the endpoints that actually call the API need real ones.
 
 ## What each route demonstrates
 
-| Route                    | Demonstrates                                                                                                     |
-| ------------------------ | ---------------------------------------------------------------------------------------------------------------- |
-| `GET /sms/accounts`      | Two independently credentialed clients resolved side by side — `forRoot()` and `forFeature('billing')`           |
-| `POST /sms`              | Sending a message through the injected client, with `TwilioExceptionFilter` mapping SDK errors to HTTP responses |
-| `POST /webhooks/sms`     | Signature validation plus a TwiML reply                                                                          |
-| `POST /webhooks/voice`   | Same, with the response content type overridden per route                                                        |
-| `POST /webhooks/billing` | Validation against a subaccount's auth token                                                                     |
+| Route                    | Demonstrates                                                                                                         |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| `GET /sms/accounts`      | Two independently credentialed clients resolved side by side — `forRoot()` and `registerClient({ name: 'billing' })` |
+| `POST /sms`              | Sending a message through the injected client, with `TwilioExceptionFilter` mapping SDK errors to HTTP responses     |
+| `POST /webhooks/sms`     | Signature validation plus a TwiML reply                                                                              |
+| `POST /webhooks/voice`   | Same, with the response content type overridden per route                                                            |
+| `POST /webhooks/billing` | Validation against a subaccount's auth token                                                                         |
 
 ## Trying the webhook routes
 

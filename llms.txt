@@ -24,7 +24,10 @@ library's JSDoc, so it cannot drift from the source.
   `nestjs-twilio/dist/**` are not supported.
 - Twilio SDK client options are **flat** on the module options object
   (`region`, `edge`, …). They were nested under `options` in v4.
-- `isGlobal` is a top-level key on the same options object.
+- `TwilioModule.forRoot()` always registers globally; there is no `isGlobal` flag.
+- Additional named clients use `TwilioModule.registerClient({ name, ... })`. They
+  inherit everything from `forRoot()` they do not override; a key set to
+  `undefined` inherits rather than clearing.
 
 ## Minimal usage
 

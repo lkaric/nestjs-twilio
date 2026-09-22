@@ -30,7 +30,6 @@ import { TwilioModule } from 'nestjs-twilio';
       webhookUrl: 'https://example.com/webhooks', // optional, for proxy scenarios
       region: 'ie1', // optional — flat, not nested under `options`
       edge: 'sydney', // optional
-      isGlobal: true, // optional — makes the module globally available
     }),
   ],
 })
@@ -73,21 +72,17 @@ export class AppModule {}
 The factory's return value is validated the same way as the synchronous
 `forRoot()` options, and it is flattened the same way — no `options` key.
 
-## `isGlobal`
+## Global registration
 
-`isGlobal` is a top-level key handled separately from the client options: it
-controls whether `TwilioModule` is registered as a Nest global module, and is
-never passed to the underlying Twilio SDK client.
+`forRoot()` always registers `TwilioModule` globally. Import it once in your
+root module and `TwilioService`, the default client and every named client are
+available application-wide — there is no flag to set.
 
-```ts
-TwilioModule.forRoot({
-  accountSid: process.env.TWILIO_ACCOUNT_SID,
-  authToken: process.env.TWILIO_AUTH_TOKEN,
-  isGlobal: true,
-});
-```
-
-Default: `false`.
+This matches `TypeOrmCoreModule`, Mongoose's core module and
+`BullModule.forRoot()`, all of which register globally. It is also what allows
+[named clients](/features/multi-account/) to inherit the options you pass here:
+a named client is registered as its own module, and a non-global root would be
+invisible to it.
 
 ## Full options reference
 
@@ -109,9 +104,8 @@ Default: `false`.
 
 ### Module-level extras
 
-| Option     | Type      | Default | Description                                                                        |
-| ---------- | --------- | ------- | ---------------------------------------------------------------------------------- |
-| `isGlobal` | `boolean` | `false` | Registers `TwilioModule` as a global Nest module. Not forwarded to the SDK client. |
+| Option | Type | Default | Description |
+| ------ | ---- | ------- | ----------- |
 
 ### Twilio SDK client options (flat, from `ClientOpts`)
 
@@ -148,12 +142,13 @@ behavior details.
 
 Everything below is part of the public API and therefore covered by semver.
 
-| Export                         | Kind      | Purpose                                                                                                                                                                                  |
-| ------------------------------ | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `TwilioClientOpts`             | interface | The credential fields plus every Twilio SDK `ClientOpts` key, flattened. `TwilioModuleOptions` extends it.                                                                               |
-| `TwilioModuleDefinitionExtras` | interface | Module-level configuration that is _not_ injected into providers — currently just `isGlobal`. Kept separate so module wiring never leaks into the options object your providers receive. |
-| `validateTwilioOptions`        | function  | The bootstrap validation the module runs for you. Exported so you can validate configuration yourself before constructing a module — useful in a config factory.                         |
-| `createTwilioClient`           | function  | The factory the module uses to build a client. Exported for tests and for advanced cases where you need a client outside Nest's DI container.                                            |
+| Export                       | Kind      | Purpose                                                                                                                                                          |
+| ---------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TwilioClientOpts`           | interface | The credential fields plus every Twilio SDK `ClientOpts` key, flattened. `TwilioModuleOptions` extends it.                                                       |
+| `TwilioClientRegistration`   | interface | A named client passed to `registerClient()`. Every field except `name` is optional and inherited from `forRoot()`.                                               |
+| `TwilioClientOptionsFactory` | interface | Implemented by a class supplying a named client's options via `registerClientAsync({ useClass })`.                                                               |
+| `validateTwilioOptions`      | function  | The bootstrap validation the module runs for you. Exported so you can validate configuration yourself before constructing a module — useful in a config factory. |
+| `createTwilioClient`         | function  | The factory the module uses to build a client. Exported for tests and for advanced cases where you need a client outside Nest's DI container.                    |
 
 ```ts
 import { createTwilioClient, validateTwilioOptions } from 'nestjs-twilio';
