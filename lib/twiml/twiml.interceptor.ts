@@ -1,8 +1,10 @@
 import {
   CallHandler,
   ExecutionContext,
+  Inject,
   Injectable,
   NestInterceptor,
+  Optional,
   SetMetadata,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
@@ -57,6 +59,26 @@ export const TWIML_RESPONSE_TYPE_METADATA = 'nestjs-twilio:twiml-response-type';
  * ```
  */
 export const DEFAULT_TWIML_CONTENT_TYPE = 'text/xml';
+
+/**
+ * Injection token for a module-wide {@link TwimlInterceptorOptions} default.
+ *
+ * Provide it when registering the interceptor globally, where there is no
+ * constructor call to pass options to. Optional: when absent, the interceptor
+ * falls back to {@link DEFAULT_TWIML_CONTENT_TYPE}.
+ *
+ * @example
+ * ```ts
+ * @Module({
+ *   providers: [
+ *     { provide: TWIML_INTERCEPTOR_OPTIONS, useValue: { contentType: 'application/xml' } },
+ *     { provide: APP_INTERCEPTOR, useClass: TwimlInterceptor },
+ *   ],
+ * })
+ * export class AppModule {}
+ * ```
+ */
+export const TWIML_INTERCEPTOR_OPTIONS = Symbol.for('nestjs-twilio:twiml-interceptor-options');
 
 /**
  * Options accepted by the {@link TwimlInterceptor} constructor.
@@ -178,8 +200,18 @@ export class TwimlInterceptor implements NestInterceptor {
 
   private readonly contentType: string;
 
-  constructor(options: TwimlInterceptorOptions = {}) {
-    this.contentType = options.contentType ?? DEFAULT_TWIML_CONTENT_TYPE;
+  // A default parameter value is not enough: `emitDecoratorMetadata` still
+  // records `Object` as the parameter type, so Nest tries to resolve it as a
+  // provider and fails whenever the interceptor is used as a class reference,
+  // e.g. `@UseInterceptors(TwimlInterceptor)`. `@Optional()` tells Nest the
+  // dependency may be absent; `@Inject()` names a token it can actually look
+  // up when someone does want to configure it.
+  constructor(
+    @Optional()
+    @Inject(TWIML_INTERCEPTOR_OPTIONS)
+    options: TwimlInterceptorOptions = {}
+  ) {
+    this.contentType = options?.contentType ?? DEFAULT_TWIML_CONTENT_TYPE;
   }
 
   public intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {

@@ -4,9 +4,9 @@ import { Reflector } from '@nestjs/core';
 // A default import always yields `module.exports`, so it works in both builds.
 import twilio from 'twilio';
 
-import { TWILIO_WEBHOOK_OPTIONS } from './twilio-webhook.decorator.js';
+import { TWILIO_WEBHOOK_OPTIONS } from './twilio-webhook.options.js';
 
-import type { TwilioWebhookOptions } from './twilio-webhook.decorator.js';
+import type { TwilioWebhookOptions } from './twilio-webhook.options.js';
 import type { CanActivate, ExecutionContext } from '@nestjs/common';
 
 /** Header Twilio signs every webhook request with. */
@@ -67,21 +67,22 @@ export interface TwilioWebhookRequest {
  * 3. The module-level default, optionally injected via the
  *    `TWILIO_WEBHOOK_OPTIONS` DI token.
  *
- * @example
- * ```ts
- * ⠀@Controller('webhooks/twilio')
- * ⠀@UseGuards(TwilioWebhookGuard)
- * export class TwilioWebhookController {
- * ⠀ @Post('sms')
- * ⠀ handleIncomingSms(@Body() body: Record<string, string>) {
- * ⠀   // Only reached once the signature has been validated.
- * ⠀ }
- * }
+ * Most applications should reach for {@link TwilioWebhook} instead, which
+ * binds this guard and records per-route options together. Use the guard
+ * directly only when you want it applied globally.
  *
- * // app.module.ts
+ * @example Global registration
+ * ```ts
+ * // app.module.ts — validates every inbound route.
+ * providers: [{ provide: APP_GUARD, useClass: TwilioWebhookGuard }],
+ * ```
+ *
+ * @example Overriding the module-level default
+ * ```ts
+ * // TwilioModule already provides this from forRoot's webhookAuthToken,
+ * // falling back to authToken. Provide it yourself only to override.
  * providers: [
- * ⠀ TwilioWebhookGuard,
- * ⠀ { provide: TWILIO_WEBHOOK_OPTIONS, useValue: { authToken: process.env.TWILIO_AUTH_TOKEN } },
+ * ⠀ { provide: TWILIO_WEBHOOK_OPTIONS, useValue: { authToken: process.env.OTHER_TOKEN } },
  * ],
  * ```
  */

@@ -71,21 +71,24 @@ describe('validateTwilioOptions', () => {
   });
 
   describe('error messages', () => {
-    it('should never expose credentials in error messages', () => {
-      const errorThrown = () =>
-        validateTwilioOptions({
-          accountSid: '',
-          authToken: 'super_secret_token_12345',
-        } as any);
+    it('never includes credentials in the error message', () => {
+      const secret = 'super_secret_token_12345';
+      type Options = Parameters<typeof validateTwilioOptions>[0];
 
-      expect(errorThrown).toThrow();
-      const error = new BadRequestException('');
+      let message: string | undefined;
+
       try {
-        errorThrown();
-      } catch (e: unknown) {
-        const msg = (e as any).message;
-        expect(msg).not.toContain('super_secret_token');
+        validateTwilioOptions({ accountSid: '', authToken: secret } as unknown as Options);
+      } catch (thrown: unknown) {
+        message = (thrown as Error).message;
       }
+
+      // Assert it actually threw, so a future change that stops validating
+      // cannot make this test pass by doing nothing.
+      expect(message).toBeDefined();
+      expect(message).not.toContain(secret);
+      // The field must still be named, or the error is not actionable.
+      expect(message).toContain('accountSid');
     });
   });
 });

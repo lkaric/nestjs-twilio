@@ -11,24 +11,36 @@ rejects the request if it doesn't match — byte for byte, verified with the
 
 ## Basic usage
 
-Apply the guard with Nest's `@UseGuards()` and mark the route with
-`@TwilioWebhook()`:
+`@TwilioWebhook()` is all you need — it binds the guard and records the
+route's options in one step:
 
 ```ts
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
-import { TwilioWebhookGuard, TwilioWebhook, TwilioWebhookRequest } from 'nestjs-twilio';
+import { Body, Controller, Post } from '@nestjs/common';
+import { TwilioWebhook, TwilioWebhookRequest } from 'nestjs-twilio';
 
 @Controller('webhooks/sms')
-@UseGuards(TwilioWebhookGuard)
 export class WebhookController {
   @Post()
   @TwilioWebhook()
   handleIncomingSms(@Body() body: TwilioWebhookRequest) {
+    // Reached only if the Twilio signature verified.
     console.log('From:', body.From);
     console.log('Body:', body.Body);
   }
 }
 ```
+
+:::caution[Do not use the decorator for options only]
+There is deliberately no way to record webhook options without also enabling
+the guard. An earlier design exposed `@TwilioWebhook()` as a metadata-only
+decorator that required a separate `@UseGuards(TwilioWebhookGuard)`; forgetting
+the second decorator left the route completely unvalidated while looking
+protected.
+:::
+
+You can still reference `TwilioWebhookGuard` directly — for example to register
+it globally with `APP_GUARD` — but you do not need to pair it with the
+decorator.
 
 `@TwilioWebhook()` applies to a controller class (setting the default for
 every handler) or to an individual handler method, where it overrides the

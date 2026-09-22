@@ -1,0 +1,24 @@
+{
+  "name": "@nestjs-twilio/example-basic",
+  "private": true,
+  "description": "Runnable NestJS application exercising every nestjs-twilio feature.",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/main.js",
+    "start:dev": "tsc -p tsconfig.json --watch"
+  },
+  "dependencies": {
+    "@nestjs/common": "12.0.4",
+    "@nestjs/core": "12.0.4",
+    "@nestjs/platform-express": "12.0.4",
+    "nestjs-twilio": "workspace:*",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2",
+    "twilio": "^6.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.6",
+    "typescript": "5.9.3"
+  }
+}

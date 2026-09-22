@@ -64,8 +64,8 @@
     "test:coverage": "pnpm clean:test && vitest run --coverage",
     "test:integration": "vitest run --config vitest.integration.config.ts",
     "type-check": "tsc --noEmit",
-    "lint": "oxlint lib scripts",
-    "lint:fix": "oxlint lib scripts --fix",
+    "lint": "oxlint lib scripts examples",
+    "lint:fix": "oxlint lib scripts examples --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "check:package": "pnpm build && publint --strict && attw --pack . && pnpm check:runtime",
@@ -75,7 +75,9 @@
     "check:runtime": "node scripts/check-dual-build.mjs",
     "docs:dev": "pnpm --filter @nestjs-twilio/docs dev",
     "docs:build": "pnpm --filter @nestjs-twilio/docs build",
-    "docs:preview": "pnpm --filter @nestjs-twilio/docs preview"
+    "docs:preview": "pnpm --filter @nestjs-twilio/docs preview",
+    "example:build": "pnpm --filter @nestjs-twilio/example-basic build",
+    "example:start": "pnpm --filter @nestjs-twilio/example-basic start"
   },
   "peerDependencies": {
     "@nestjs/common": "^11.0.0 || ^12.0.0",

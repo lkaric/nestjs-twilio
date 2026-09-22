@@ -70,27 +70,44 @@ export function createTwilioClient(options: typeof OPTIONS_TYPE): TwilioClient {
   const credential = options.authToken || options.apiKey || '';
 
   // Extract Twilio-specific config and remove auth fields (they go to constructor)
-  const { accountSid, authToken, apiKey, apiSecret, ...clientOpts } = options;
+  const {
+    accountSid,
+    authToken: _authToken,
+    apiKey: _apiKey,
+    apiSecret: _apiSecret,
+    ...clientOpts
+  } = options;
 
   const client = new twilio.Twilio(accountSid, credential, clientOpts);
   return client;
 }
 
 /**
- * Generate a DI token for a named Twilio client.
- * Used by `forFeature()` to allow multiple clients in one app.
+ * Resolve the dependency-injection token for a Twilio client.
+ *
+ * Backed by `Symbol.for`, so the same name always yields the *identical*
+ * symbol. A plain `Symbol()` mints a fresh, unequal value on every call, which
+ * silently breaks injection: the provider registers one token while the
+ * consumer injects another, and Nest reports the dependency as missing.
+ *
+ * Names are matched case-insensitively, and the registry key is namespaced so
+ * it cannot collide with symbols registered by other packages.
+ *
+ * @param name - The feature name passed to `forFeature()`. Omit for the
+ * default client registered by `forRoot()`.
  *
  * @example
  * ```ts
- * const token = getTwilioClientToken('billing');
- * @Inject(token) client: Twilio
+ * // Equal across calls, and across module boundaries.
+ * getTwilioClientToken('billing') === getTwilioClientToken('Billing'); // true
+ *
+ * // Inject a named client without the decorator.
+ * @Inject(getTwilioClientToken('billing')) private readonly billing: TwilioClient
  * ```
  */
 export function getTwilioClientToken(name?: string): symbol {
-  if (!name) {
-    return Symbol('DEFAULT_TWILIO_CLIENT');
-  }
-  return Symbol(`TWILIO_CLIENT_${name.toUpperCase()}`);
+  const key = name ? `client:${name.toLowerCase()}` : 'client:default';
+  return Symbol.for(`nestjs-twilio:${key}`);
 }
 
 export { OPTIONS_TYPE };

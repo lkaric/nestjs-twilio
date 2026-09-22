@@ -5,9 +5,25 @@
     "es2022": true
   },
   "rules": {
-    "no-console": ["warn", { "allow": ["warn", "error"] }],
-    "no-empty": ["warn", { "allowEmptyCatch": true }],
-    "no-unused-vars": ["warn", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
+    "no-console": [
+      "warn",
+      {
+        "allow": ["warn", "error"]
+      }
+    ],
+    "no-empty": [
+      "warn",
+      {
+        "allowEmptyCatch": true
+      }
+    ],
+    "no-unused-vars": [
+      "warn",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_"
+      }
+    ],
     "no-constant-condition": "warn"
   },
   "overrides": [
@@ -18,5 +34,5 @@
       }
     }
   ],
-  "ignorePatterns": ["dist/", "coverage/", "node_modules/", "docs/"]
+  "ignorePatterns": ["**/node_modules/**", "**/dist/**", "**/coverage/**", "docs/**"]
 }
