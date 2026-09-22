@@ -327,8 +327,13 @@ jobs:
           TWILIO_BILLING_AUTH_TOKEN: ci_billing_auth_token
           TWILIO_PHONE_NUMBER: '+15550001111'
 
-  # Single required status check. Branch protection points at this job only,
-  # so adding or renaming a matrix leg never requires editing branch rules.
+  # Aggregates every job in this workflow into one required status check, so
+  # adding or renaming a matrix leg never requires editing branch rules.
+  #
+  # It deliberately does not cover CodeQL. `needs` cannot reference another
+  # workflow, and CodeQL lives in codeql.yml because default setup exposes no
+  # badge endpoint. Its two `Analyze` contexts are required separately in
+  # branch protection; those names track the language list, which is stable.
   ci:
     name: CI
     runs-on: ubuntu-latest

@@ -1,0 +1,60 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: CodeQL
+
+# Advanced setup rather than default setup. Default setup scans identically but
+# has no workflow file, so it has no badge endpoint: the only URL GitHub exposes
+# for it returns HTML rather than an SVG. A committed workflow also makes the
+# scanned languages and schedule reviewable in a pull request.
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  schedule:
+    # A weekly scan catches advisories published against code that has not
+    # changed, which push-triggered runs never revisit.
+    - cron: '0 9 * * 3'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: codeql-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    permissions:
+      # Required to upload results to the code scanning API.
+      security-events: write
+      # Required for the workflow to read its own run metadata.
+      actions: read
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # `actions` scans the workflows themselves for injection and
+          # permission issues, which matters here because CI handles Twilio
+          # credentials and an npm publish.
+          - language: actions
+          - language: javascript-typescript
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Initialise CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ matrix.language }}
+          # This is a TypeScript library with no compiled artefact to trace, so
+          # CodeQL analyses the sources directly instead of watching a build.
+          build-mode: none
+
+      - name: Analyse
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: /language:${{ matrix.language }}

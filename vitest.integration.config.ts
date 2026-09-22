@@ -1,6 +1,6 @@
 import { defineConfig } from 'vitest/config';
 
-import { swcPlugin } from './vitest.shared';
+import { swcPlugin } from './vitest.shared.js';
 
 // Live-API suite. Requires real Twilio credentials and sends real messages, so
 // it never runs on pull requests, only via manual workflow_dispatch or locally.
