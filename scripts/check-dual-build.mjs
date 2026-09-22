@@ -3,7 +3,7 @@
  *
  * `tsc`, `publint` and `attw` all pass on builds that throw the moment Node
  * imports them: tsc only checks types, publint only checks the manifest, and
- * attw only checks type resolution. Two real defects slipped past all three —
+ * attw only checks type resolution. Two real defects slipped past all three:
  * a directory specifier in the ESM barrel, and a named value import from a
  * CommonJS dependency that cjs-module-lexer cannot resolve. Only loading the
  * output catches those.
