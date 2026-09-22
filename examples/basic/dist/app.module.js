@@ -5,8 +5,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 import { Module } from '@nestjs/common';
+import { TerminusModule } from '@nestjs/terminus';
 import { TwilioModule } from 'nestjs-twilio';
+import { TwilioHealthIndicator } from 'nestjs-twilio/terminus';
 import { BillingService } from './billing.service.js';
+import { HealthController } from './health.controller.js';
 import { SmsController } from './sms.controller.js';
 import { SmsService } from './sms.service.js';
 import { WebhookController } from './webhook.controller.js';
@@ -15,6 +18,7 @@ let AppModule = class AppModule {
 AppModule = __decorate([
     Module({
         imports: [
+            TerminusModule,
             // Default client. Every Twilio SDK client option is a top-level key here —
             // in v4 they were nested under `options`.
             TwilioModule.forRoot({
@@ -36,8 +40,8 @@ AppModule = __decorate([
                 authToken: process.env.TWILIO_BILLING_AUTH_TOKEN ?? 'example_billing_token',
             }),
         ],
-        controllers: [SmsController, WebhookController],
-        providers: [SmsService, BillingService],
+        controllers: [SmsController, WebhookController, HealthController],
+        providers: [SmsService, BillingService, TwilioHealthIndicator],
     })
 ], AppModule);
 export { AppModule };

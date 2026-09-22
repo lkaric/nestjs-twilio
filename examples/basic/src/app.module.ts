@@ -1,13 +1,17 @@
 import { Module } from '@nestjs/common';
+import { TerminusModule } from '@nestjs/terminus';
 import { TwilioModule } from 'nestjs-twilio';
+import { TwilioHealthIndicator } from 'nestjs-twilio/terminus';
 
 import { BillingService } from './billing.service.js';
+import { HealthController } from './health.controller.js';
 import { SmsController } from './sms.controller.js';
 import { SmsService } from './sms.service.js';
 import { WebhookController } from './webhook.controller.js';
 
 @Module({
   imports: [
+    TerminusModule,
     // Default client. Every Twilio SDK client option is a top-level key here —
     // in v4 they were nested under `options`.
     TwilioModule.forRoot({
@@ -32,7 +36,7 @@ import { WebhookController } from './webhook.controller.js';
       authToken: process.env.TWILIO_BILLING_AUTH_TOKEN ?? 'example_billing_token',
     }),
   ],
-  controllers: [SmsController, WebhookController],
-  providers: [SmsService, BillingService],
+  controllers: [SmsController, WebhookController, HealthController],
+  providers: [SmsService, BillingService, TwilioHealthIndicator],
 })
 export class AppModule {}

@@ -104,6 +104,7 @@ export default defineConfig({
             { label: 'TwiML Responses', slug: 'features/twiml-responses' },
             { label: 'Error Handling', slug: 'features/error-handling' },
             { label: 'Multi-Account Clients', slug: 'features/multi-account' },
+            { label: 'Health Checks', slug: 'features/health-checks' },
           ],
         },
         {

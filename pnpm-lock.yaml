@@ -126,6 +126,9 @@ importers:
       '@nestjs/platform-express':
         specifier: 12.0.4
         version: 12.0.4(@nestjs/common@12.0.4(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@7.2.0))(@nestjs/core@12.0.4)(supports-color@7.2.0)
+      '@nestjs/terminus':
+        specifier: 12.1.0
+        version: 12.1.0(@nestjs/common@12.0.4(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@7.2.0))(@nestjs/core@12.0.4)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       nestjs-twilio:
         specifier: workspace:*
         version: link:../..

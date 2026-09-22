@@ -44,11 +44,22 @@
         "default": "./dist/cjs/index.js"
       }
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./terminus": {
+      "import": {
+        "types": "./dist/esm/terminus/index.d.ts",
+        "default": "./dist/esm/terminus/index.js"
+      },
+      "require": {
+        "types": "./dist/cjs/terminus/index.d.ts",
+        "default": "./dist/cjs/terminus/index.js"
+      }
+    }
   },
   "files": [
     "dist",
-    "llms.txt"
+    "llms.txt",
+    "terminus"
   ],
   "engines": {
     "node": ">=20.19.0"

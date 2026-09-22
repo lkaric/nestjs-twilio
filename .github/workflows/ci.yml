@@ -223,6 +223,30 @@ jobs:
             exit 1
           fi
           echo "unsigned webhook correctly rejected with 403"
+
+          # The health indicator is built on Terminus' attempt(), so an
+          # unreachable or unauthorised Twilio must surface as a 503 "down"
+          # result. A 500 would mean the indicator threw and aborted the whole
+          # health check, which is the failure mode the Terminus docs warn
+          # about. Credentials here are deliberately invalid.
+          health=$(curl -s -o /tmp/health.json -w '%{http_code}' --max-time 30 \
+            http://localhost:3000/health || true)
+          if [ "$health" != "503" ]; then
+            echo "::error::health check returned $health, expected 503"
+            cat /tmp/health.json || true
+            exit 1
+          fi
+          node -e "
+            const report = require('/tmp/health.json');
+            const details = report.details ?? {};
+            for (const key of ['twilio', 'twilio-billing']) {
+              if (details[key]?.status !== 'down') {
+                console.error('::error::' + key + ' should be down, got ' + details[key]?.status);
+                process.exit(1);
+              }
+            }
+          "
+          echo "health check correctly reported 503 with both clients down"
         env:
           TWILIO_ACCOUNT_SID: ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
           TWILIO_AUTH_TOKEN: ci_test_auth_token

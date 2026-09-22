@@ -40,3 +40,6 @@ docs/dist/
 docs/.astro/
 # API reference markdown is generated from JSDoc on every build.
 docs/src/content/docs/api/
+# Generated subpath stub for legacy Node resolution. Leading slash matters:
+# a bare `terminus/` would also ignore lib/terminus/, the actual source.
+/terminus/

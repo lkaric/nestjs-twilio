@@ -19,6 +19,7 @@ Full-featured NestJS integration for Twilio with:
 - ✅ TwiML response serialization
 - ✅ Automatic error mapping
 - ✅ Multi-account / subaccount clients
+- ✅ Terminus health indicator (optional)
 - ✅ TypeScript-first with full type support
 
 ## Installation
@@ -171,6 +172,33 @@ export class BillingService {
 Named clients inherit everything from `forRoot()` that they do not override,
 so transport settings such as `region` and `edge` stay consistent across
 accounts. `registerClientAsync()` is available for factory-based configuration.
+
+### Health Checks
+
+`@nestjs/terminus` is an optional peer dependency. Install it and import the
+indicator from the `nestjs-twilio/terminus` subpath:
+
+```typescript
+import { HealthCheck, HealthCheckService } from '@nestjs/terminus';
+import { TwilioHealthIndicator } from 'nestjs-twilio/terminus';
+
+@Controller('health')
+export class HealthController {
+  constructor(
+    private readonly health: HealthCheckService,
+    private readonly twilio: TwilioHealthIndicator
+  ) {}
+
+  @Get()
+  @HealthCheck()
+  check() {
+    return this.health.check([() => this.twilio.isHealthy('twilio').withTimeout(5000)]);
+  }
+}
+```
+
+It fetches the account resource, so it verifies reachability _and_ credentials.
+Importing from the subpath keeps the package root free of the optional peer.
 
 ## Configuration
 

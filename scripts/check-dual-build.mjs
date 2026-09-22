@@ -44,6 +44,17 @@ const onlyEsm = esmKeys.filter((key) => !cjsKeys.includes(key));
 if (onlyCjs.length > 0) fail(`exported only by the CommonJS build: ${onlyCjs.join(', ')}`);
 if (onlyEsm.length > 0) fail(`exported only by the ES module build: ${onlyEsm.join(', ')}`);
 
+// `@nestjs/terminus` is an optional peer, so the health indicator lives behind
+// the `nestjs-twilio/terminus` subpath. If the root entry ever pulled it in,
+// importing this package would throw for every consumer who has not installed
+// Terminus. `require.cache` holds the full CommonJS graph loaded above, so a
+// regression shows up here.
+const loadedTerminus = Object.keys(require.cache).some((file) => file.includes('@nestjs/terminus'));
+
+if (loadedTerminus) {
+  fail('the root entry pulled in @nestjs/terminus, which is an optional peer');
+}
+
 if (process.exitCode === 1) {
   console.error('\nThe two builds are not interchangeable. Consumers will see different APIs.');
   process.exit(1);
