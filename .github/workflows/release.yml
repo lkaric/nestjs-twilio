@@ -79,19 +79,21 @@ jobs:
       - name: Build distribution
         run: pnpm build
 
-      # @semantic-release/npm v13 resolves authentication in this order:
-      #   1. npm trusted publishing — exchanges the GitHub OIDC token for a
-      #      short-lived registry token. Requires id-token: write above, plus a
-      #      trusted publisher configured for this package on npmjs.com that
-      #      names this repository and this workflow file. Provenance is then
-      #      attested automatically.
-      #   2. NPM_TOKEN — used only when no trusted publisher is configured.
-      #      NPM_CONFIG_PROVENANCE is what attests provenance on this path.
-      # Keeping both means the release works today on the token, and silently
-      # upgrades to tokenless the moment the trusted publisher is registered.
+      # Authentication is npm trusted publishing: @semantic-release/npm
+      # exchanges the GitHub OIDC token for a short-lived registry token. That
+      # needs `id-token: write` above and a trusted publisher registered for
+      # this package on npmjs.com naming this repository and this workflow
+      # file. Provenance is attested as part of that exchange.
+      #
+      # There is deliberately no NPM_TOKEN fallback. Classic automation tokens
+      # were removed in November 2025, and granular tokens lose direct-publish
+      # in January 2027, so a token path would be a credential with an expiry
+      # date pretending to be a safety net.
       - name: Run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+          # Redundant under trusted publishing, which attests provenance as
+          # part of the token exchange, but explicit so provenance cannot be
+          # lost silently if that behaviour ever changes.
           NPM_CONFIG_PROVENANCE: 'true'
         run: pnpm exec semantic-release ${{ inputs.dry-run && '--dry-run' || '' }}
