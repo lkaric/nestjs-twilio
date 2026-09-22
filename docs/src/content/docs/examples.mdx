@@ -1,0 +1,96 @@
+---
+title: Example App
+description: A runnable NestJS application exercising every feature this package ships.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+The repository ships a runnable example application at
+[`examples/basic`](https://github.com/lkaric/nestjs-twilio/tree/master/examples/basic).
+It is a small NestJS app that exercises every feature this package ships, so
+it doubles as a working reference alongside these guides.
+
+## What it demonstrates
+
+- Injecting the Twilio client with `@InjectTwilio()`, as in [Register the module](/configuration/)
+- Named, independently credentialed clients through `registerClient()`, as in [Use multiple accounts](/features/multi-account/)
+- API-key authenticated clients minting Access Tokens, as in [Mint access tokens](/features/access-tokens/)
+- Webhook signature validation with `@TwilioWebhook()`, as in [Validate webhook signatures](/features/webhook-validation/)
+- Returning TwiML responses with `TwimlInterceptor`, as in [Return TwiML responses](/features/twiml-responses/)
+- Mapping Twilio SDK errors to HTTP responses with `TwilioExceptionFilter`, as in [Handle Twilio errors](/features/error-handling/)
+- A Terminus health endpoint probing both registered clients, as in [Add health checks](/features/health-checks/)
+
+## Clone and run it
+
+The example consumes the library through a pnpm workspace link, so it builds
+against the library's real built output in `dist/`, not its TypeScript
+sources. That is what makes it a genuine check of the published surface,
+rather than a demo that only works against source you can also read.
+
+<Steps>
+
+1. Clone the repository and install dependencies from the root:
+
+   ```bash
+   git clone https://github.com/lkaric/nestjs-twilio.git
+   cd nestjs-twilio
+   pnpm install
+   ```
+
+2. Build the library first, then the example:
+
+   ```bash
+   pnpm build
+   pnpm --filter @nestjs-twilio/example-basic build
+   ```
+
+3. Copy the environment template and fill in your credentials:
+
+   ```bash
+   cd examples/basic
+   cp .env.example .env
+   ```
+
+4. Start the app:
+
+   ```bash
+   node dist/main.js
+   ```
+
+</Steps>
+
+The app listens on `http://localhost:3000` (override with `PORT`). It boots
+and serves with the placeholder credentials already in `.env.example`, so you
+can explore every route without a Twilio account. Only the calls that
+actually reach the Twilio API need real credentials.
+
+## Environment variables
+
+| Variable                     | Used for                                                                                    |
+| ---------------------------- | ------------------------------------------------------------------------------------------- |
+| `TWILIO_ACCOUNT_SID`         | Default client, `TwilioModule.forRoot()`                                                    |
+| `TWILIO_AUTH_TOKEN`          | Default client, and default webhook signature validation                                    |
+| `TWILIO_PHONE_NUMBER`        | Sender number for `POST /sms`, in E.164 format                                              |
+| `TWILIO_BILLING_ACCOUNT_SID` | Subaccount client, `TwilioModule.registerClient({ name: 'billing' })`                       |
+| `TWILIO_BILLING_AUTH_TOKEN`  | Subaccount client, and `POST /webhooks/billing` signature validation                        |
+| `TWILIO_API_KEY`             | `realtime` client, used to mint Access Tokens                                               |
+| `TWILIO_API_SECRET`          | `realtime` client, used to mint Access Tokens                                               |
+| `PUBLIC_URL`                 | Optional. Public origin to reconstruct the signed URL when running behind a tunnel or proxy |
+| `PORT`                       | Optional. Overrides the default port of `3000`                                              |
+
+## Routes
+
+| Route                    | Demonstrates                                                                                                                                                       |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `GET /sms/accounts`      | Two independently credentialed clients resolved side by side, see [Use multiple accounts](/features/multi-account/)                                                |
+| `POST /sms`              | Sending a message through the injected client, with errors mapped by `TwilioExceptionFilter`, see [Handle Twilio errors](/features/error-handling/)                |
+| `POST /webhooks/sms`     | Signature validation plus a TwiML reply, see [Validate webhook signatures](/features/webhook-validation/) and [Return TwiML responses](/features/twiml-responses/) |
+| `POST /webhooks/voice`   | Same, with the response content type overridden per route, see [Return TwiML responses](/features/twiml-responses/)                                                |
+| `POST /webhooks/billing` | Validation against a subaccount's auth token, see [Validate webhook signatures](/features/webhook-validation/)                                                     |
+| `GET /token/voice`       | Minting a Voice access token from an API-key-authenticated named client, see [Mint access tokens](/features/access-tokens/)                                        |
+| `GET /token/video`       | Same, scoped to a Video room, see [Mint access tokens](/features/access-tokens/)                                                                                   |
+| `GET /health`            | Terminus health check probing both clients, see [Add health checks](/features/health-checks/)                                                                      |
+
+See the [example README](https://github.com/lkaric/nestjs-twilio/tree/master/examples/basic)
+for computing a valid `X-Twilio-Signature` locally to exercise the webhook
+success path.

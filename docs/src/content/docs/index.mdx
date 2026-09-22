@@ -15,33 +15,49 @@ hero:
       variant: minimal
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
+import { CardGrid, LinkCard } from '@astrojs/starlight/components';
 
-## Why nestjs-twilio?
+## What it does
 
-<CardGrid stagger>
-  <Card title="Dependency Injection" icon="puzzle">
-    Register the Twilio SDK client once with `TwilioModule.forRoot()` and inject it anywhere with
-    `@InjectTwilio()` or the `TwilioService` wrapper.
-  </Card>
-  <Card title="Webhook Signature Validation" icon="approve-check">
-    `TwilioWebhookGuard` and `@TwilioWebhook()` verify the `X-Twilio-Signature` header on inbound
-    requests, including behind proxies and for JSON bodies.
-  </Card>
-  <Card title="TwiML Responses" icon="document">
-    `TwimlInterceptor` serializes `VoiceResponse`, `MessagingResponse`, and `FaxResponse` builders
-    returned from a controller straight to XML.
-  </Card>
-  <Card title="Error Mapping" icon="warning">
-    `TwilioExceptionFilter` maps the Twilio SDK's `RestException` onto a Nest `HttpException`-shaped
-    JSON response, preserving the Twilio error code and `more_info` link.
-  </Card>
-  <Card title="Multi-Account Clients" icon="rocket">
-    Register additional named clients for subaccounts with `TwilioModule.forFeature(name, options)`
-    and inject them with `@InjectTwilio(name)`.
-  </Card>
-  <Card title="TypeScript-First" icon="seti:typescript">
-    Dual ESM/CJS build behind an `exports` map, with full type support and preserved decorator
-    metadata in both builds.
-  </Card>
+<CardGrid>
+  <LinkCard
+    title="Inject the Twilio client"
+    href="/configuration/"
+    description="Register the SDK client once with TwilioModule.forRoot(), then inject it anywhere with @InjectTwilio() or the TwilioService wrapper."
+  />
+  <LinkCard
+    title="Validate webhook signatures"
+    href="/features/webhook-validation/"
+    description="TwilioWebhookGuard and @TwilioWebhook() verify the X-Twilio-Signature header, including behind proxies and for JSON bodies."
+  />
+  <LinkCard
+    title="Return TwiML responses"
+    href="/features/twiml-responses/"
+    description="Return a VoiceResponse, MessagingResponse or FaxResponse builder from a controller and TwimlInterceptor serializes it to XML."
+  />
+  <LinkCard
+    title="Handle Twilio errors"
+    href="/features/error-handling/"
+    description="TwilioExceptionFilter maps the SDK's RestException onto a Nest HttpException, preserving the Twilio error code and more_info link."
+  />
+  <LinkCard
+    title="Use multiple accounts"
+    href="/features/multi-account/"
+    description="Register named clients for subaccounts with TwilioModule.registerClient() and inject them with @InjectTwilio(name)."
+  />
+  <LinkCard
+    title="Mint access tokens"
+    href="/features/access-tokens/"
+    description="Issue short-lived tokens for the Voice, Video, Conversations and Sync client SDKs, signed with an API key."
+  />
+  <LinkCard
+    title="Add health checks"
+    href="/features/health-checks/"
+    description="Report Twilio API reachability and credential validity through a Terminus health indicator."
+  />
+  <LinkCard
+    title="Test your integration"
+    href="/guides/testing/"
+    description="Override the injected client, sign fixture webhooks, and assert on TwiML and mapped errors without calling Twilio."
+  />
 </CardGrid>

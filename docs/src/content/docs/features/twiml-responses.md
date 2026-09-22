@@ -1,5 +1,5 @@
 ---
-title: TwiML Responses
+title: Return TwiML responses
 description: Return VoiceResponse, MessagingResponse, and FaxResponse builders directly from controllers with TwimlInterceptor.
 ---
 
@@ -10,7 +10,7 @@ the `Content-Type` header for you.
 
 ## Basic usage
 
-```ts
+```ts title="src/sms/sms.controller.ts"
 import { Controller, Post, UseInterceptors } from '@nestjs/common';
 import { TwimlInterceptor } from 'nestjs-twilio';
 import { MessagingResponse } from 'twilio/lib/twiml/MessagingResponse';
@@ -82,21 +82,9 @@ globally alongside handlers that return plain JSON.
 
 ## Reference
 
-### `TwimlInterceptorOptions`
-
-| Field         | Type                              | Default      | Description                                                                                                              |
-| ------------- | --------------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------ |
-| `contentType` | `'text/xml' \| 'application/xml'` | `'text/xml'` | `Content-Type` header written for every serialized response from this interceptor instance, unless overridden per-route. |
-
-### Exports
-
-- `TwimlInterceptor`: the `NestInterceptor`. Accepts an optional
-  `TwimlInterceptorOptions` in its constructor.
-- `TwimlResponseType(contentType?)`: method decorator overriding the
-  `Content-Type` for a single route.
-- `isTwimlResponse(value)`: type guard identifying a Twilio TwiML builder
-  instance.
-- `TWIML_RESPONSE_TYPE_METADATA`: the metadata key `TwimlResponseType`
-  writes to and `TwimlInterceptor` reads from.
-- `DEFAULT_TWIML_CONTENT_TYPE`: the default `'text/xml'` content type
-  constant.
+See [`TwimlInterceptorOptions`](/api/interfaces/twimlinterceptoroptions/)
+for the interceptor's constructor options,
+[`TwimlInterceptor`](/api/classes/twimlinterceptor/) for the interceptor
+itself, [`TwimlResponseType`](/api/functions/twimlresponsetype/) for the
+per-route decorator, and [`isTwimlResponse`](/api/functions/istwimlresponse/)
+for the type guard.

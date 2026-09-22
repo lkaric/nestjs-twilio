@@ -1,5 +1,5 @@
 ---
-title: Multi-Account Clients
+title: Use multiple accounts
 description: Register additional named Twilio clients for subaccounts with registerClient and registerClientAsync.
 ---
 
@@ -14,7 +14,7 @@ each named registration inherits it.
 
 ## Basic usage
 
-```ts
+```ts title="src/app.module.ts"
 import { Module } from '@nestjs/common';
 import { TwilioModule } from 'nestjs-twilio';
 
@@ -136,7 +136,7 @@ TwilioModule.registerClientAsync({
 
 With a factory class, implement `TwilioClientOptionsFactory`:
 
-```ts
+```ts title="src/billing-twilio.config.ts"
 import { Injectable } from '@nestjs/common';
 import type { TwilioClientOptionsFactory, TwilioModuleOptions } from 'nestjs-twilio';
 
@@ -191,12 +191,9 @@ and every client is available application-wide.
 This is also what makes inheritance work: a named client is registered as its
 own module, and a non-global root would be invisible to it.
 
-## API
+## Reference
 
-- `TwilioModule.forRoot(options)`: the default client, and the options named
-  clients inherit
-- `TwilioModule.forRootAsync({ useFactory | useClass | useExisting, inject?, imports? })`
-- `TwilioModule.registerClient({ name, ...overrides })`: an additional named client
-- `TwilioModule.registerClientAsync({ name, useFactory | useClass | useExisting, inject?, imports? })`
-- `getTwilioClientToken(name?)`: the DI token for a client
-- `@InjectTwilio(name?)`: inject a client
+See [`TwilioModule`](/api/classes/twiliomodule/) for the full method
+signatures, [`getTwilioClientToken`](/api/functions/gettwilioclienttoken/)
+for the DI token helper, and [`InjectTwilio`](/api/functions/injecttwilio/)
+for the injection decorator.

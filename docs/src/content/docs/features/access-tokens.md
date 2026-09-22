@@ -1,6 +1,6 @@
 ---
-title: Access Tokens
-description: Mint short-lived Access Tokens so browser and mobile clients can use Twilio's Voice, Video, Conversations and Sync SDKs.
+title: Mint access tokens
+description: Generate short-lived Access Tokens so browser and mobile clients can use Twilio's Voice, Video, Conversations and Sync SDKs.
 ---
 
 Twilio's client-side SDKs ([Voice](https://www.twilio.com/docs/voice/sdks),
@@ -12,7 +12,7 @@ directly, without ever holding your account credentials.
 
 `TwilioTokenService` mints them.
 
-```ts
+```ts title="src/token/token.controller.ts"
 import { Controller, Get, Query } from '@nestjs/common';
 import { TwilioTokenService } from 'nestjs-twilio';
 
@@ -133,12 +133,7 @@ error arrives at the server line responsible for it.
 
 ## Reference
 
-| Option     | Type     | Description                                           |
-| ---------- | -------- | ----------------------------------------------------- |
-| `identity` | `string` | Required. Who the token represents.                   |
-| `ttl`      | `number` | Lifetime in seconds. Default `3600`, maximum `86400`. |
-| `nbf`      | `number` | Epoch seconds before which the token is not accepted. |
-| `region`   | `string` | Twilio Region. Honoured for Voice tokens.             |
-
-See the [Access Tokens reference](https://www.twilio.com/docs/iam/access-tokens)
+See [`TwilioTokenOptions`](/api/interfaces/twiliotokenoptions/) for the
+shared JWT settings (`identity`, `ttl`, `nbf`, `region`) every helper
+accepts, and the [Access Tokens reference](https://www.twilio.com/docs/iam/access-tokens)
 for the full token model.

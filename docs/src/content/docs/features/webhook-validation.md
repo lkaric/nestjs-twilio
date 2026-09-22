@@ -1,5 +1,5 @@
 ---
-title: Webhook Signature Validation
+title: Validate webhook signatures
 description: Validate inbound Twilio webhook requests with TwilioWebhookGuard and @TwilioWebhook().
 ---
 
@@ -14,7 +14,7 @@ using the `twilio` SDK's constant-time comparison.
 `@TwilioWebhook()` is all you need: it binds the guard and records the
 route's options in one step:
 
-```ts
+```ts title="src/webhooks/webhook.controller.ts"
 import { Body, Controller, Post } from '@nestjs/common';
 import { TwilioWebhook, TwilioWebhookRequest } from 'nestjs-twilio';
 
@@ -57,7 +57,7 @@ It resolves one with the following priority, from highest to lowest:
 3. A module-level default, injected via the `TWILIO_WEBHOOK_OPTIONS` DI
    token.
 
-```ts
+```ts title="src/webhooks/webhook.module.ts"
 import { Module } from '@nestjs/common';
 import { TwilioWebhookGuard, TWILIO_WEBHOOK_OPTIONS } from 'nestjs-twilio';
 
@@ -190,22 +190,8 @@ verification.
 
 ## Reference
 
-### `TwilioWebhookOptions`
-
-| Field               | Type                | Description                                                        |
-| ------------------- | ------------------- | ------------------------------------------------------------------ |
-| `authToken`         | `string`            | Auth token used to compute the expected signature.                 |
-| `url`               | `string`            | Full public URL (with query string) Twilio was configured to call. |
-| `protocol`          | `'http' \| 'https'` | Overrides the reconstructed URL's protocol.                        |
-| `host`              | `string`            | Overrides the reconstructed URL's host.                            |
-| `disableValidation` | `boolean`           | Skips validation entirely for the decorated route/class.           |
-
-### Exports
-
-- `TwilioWebhookGuard`: the `CanActivate` guard.
-- `TwilioWebhook(options?)`: route/class decorator setting per-route
-  options.
-- `TWILIO_WEBHOOK_OPTIONS`: DI token for the module-level default options,
-  and the metadata key `TwilioWebhookGuard` reads via `Reflector`.
-- `TwilioWebhookRequest`: the minimal request shape the guard reads
-  (`protocol`, `originalUrl`, `url`, `headers`, `body`, `rawBody`).
+See [`TwilioWebhookOptions`](/api/interfaces/twiliowebhookoptions/) for the
+full set of per-route options, [`TwilioWebhookGuard`](/api/classes/twiliowebhookguard/)
+for the guard itself, [`TwilioWebhook`](/api/functions/twiliowebhook/) for
+the decorator, and [`TwilioWebhookRequest`](/api/interfaces/twiliowebhookrequest/)
+for the request shape the guard reads.

@@ -1,0 +1,128 @@
+---
+title: Quick Start
+description: Install nestjs-twilio, register the client, and send your first SMS from a NestJS application.
+---
+
+import { Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+
+You will register `TwilioModule` in a NestJS application, inject the Twilio
+SDK client, and send a text message. By the end you will have a working
+service that sends SMS through your Twilio account.
+
+## Prerequisites
+
+- Node.js `>=20.19.0`
+- A [Twilio account](https://www.twilio.com/try-twilio), with a phone number
+  capable of sending SMS
+- Your Account SID and Auth Token, found on the
+  [Twilio Console](https://console.twilio.com/) dashboard under **Account
+  Info**
+- An existing NestJS application. If you don't have one, create one with
+  [`nest new`](https://docs.nestjs.com/first-steps)
+
+<Steps>
+
+1. Install the package. As of v5, `twilio` is a peer dependency and is not
+   installed for you, so install it alongside `nestjs-twilio`:
+
+   <Tabs>
+     <TabItem label="npm">```bash npm install nestjs-twilio twilio ```</TabItem>
+     <TabItem label="pnpm">```bash pnpm add nestjs-twilio twilio ```</TabItem>
+     <TabItem label="yarn">```bash yarn add nestjs-twilio twilio ```</TabItem>
+   </Tabs>
+
+2. Register `TwilioModule` in your root module and call `forRoot()` with
+   your Account SID and Auth Token:
+
+   ```ts title="src/app.module.ts"
+   import { Module } from '@nestjs/common';
+   import { TwilioModule } from 'nestjs-twilio';
+
+   @Module({
+     imports: [
+       TwilioModule.forRoot({
+         accountSid: process.env.TWILIO_ACCOUNT_SID,
+         authToken: process.env.TWILIO_AUTH_TOKEN,
+       }),
+     ],
+   })
+   export class AppModule {}
+   ```
+
+   `forRoot()` validates these credentials as soon as the module initializes,
+   so a typo in your Account SID fails at startup instead of on the first
+   request.
+
+3. Add a service that injects the Twilio client with `@InjectTwilio()` and
+   calls `messages.create()`:
+
+   ```ts title="src/app.service.ts"
+   import { Injectable } from '@nestjs/common';
+   import { InjectTwilio } from 'nestjs-twilio';
+   import type { Twilio } from 'twilio';
+
+   @Injectable()
+   export class AppService {
+     constructor(@InjectTwilio() private readonly twilioClient: Twilio) {}
+
+     sendWelcomeSms(to: string) {
+       return this.twilioClient.messages.create({
+         from: process.env.TWILIO_PHONE_NUMBER,
+         to,
+         body: 'Hello from nestjs-twilio!',
+       });
+     }
+   }
+   ```
+
+   Add `AppService` to the `providers` array of `AppModule` if it isn't
+   already there.
+
+4. Call `sendWelcomeSms()` right after the application boots, so you see the
+   result without adding a route:
+
+   ```ts title="src/main.ts" {3,7-8}
+   import { NestFactory } from '@nestjs/core';
+   import { AppModule } from './app.module';
+   import { AppService } from './app.service';
+
+   async function bootstrap() {
+     const app = await NestFactory.create(AppModule);
+     const message = await app.get(AppService).sendWelcomeSms('+15559876543');
+     console.log(`Sent message ${message.sid}`);
+     await app.listen(3000);
+   }
+   bootstrap();
+   ```
+
+   Replace `'+15559876543'` with a phone number you can receive a text at,
+   then set the environment variables and start the application:
+
+   ```bash
+   TWILIO_ACCOUNT_SID=ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx \
+   TWILIO_AUTH_TOKEN=your_auth_token \
+   TWILIO_PHONE_NUMBER=+15551234567 \
+   npm run start:dev
+   ```
+
+   Check the destination phone: the text arrives within a few seconds, and
+   the terminal prints the message SID that Twilio assigned to it.
+
+   </Steps>
+
+## Next steps
+
+- [Register the module](/configuration/): synchronous and asynchronous
+  registration, authenticating with an API key, and global registration.
+- [Validate webhook signatures](/features/webhook-validation/): verify
+  inbound Twilio requests.
+- [Return TwiML responses](/features/twiml-responses/): reply to webhooks
+  with TwiML XML.
+- [Handle Twilio errors](/features/error-handling/): map Twilio SDK errors to
+  HTTP responses.
+- [Use multiple accounts](/features/multi-account/): register additional
+  named clients for subaccounts.
+- [Example App](/examples/): a runnable application exercising every feature
+  this package ships.
+
+Upgrading from v4? See the [migration guide](/migration/).

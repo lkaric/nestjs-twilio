@@ -3,7 +3,7 @@ import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import starlightTypeDoc, { typeDocSidebarGroup } from 'starlight-typedoc';
 import starlightLlmsTxt from 'starlight-llms-txt';
-import sentryStarlightTheme, { monochromeCodeTheme } from '@sentry/starlight-theme';
+import sentryStarlightTheme from '@sentry/starlight-theme';
 
 export default defineConfig({
   // Served from a custom subdomain, so the site lives at the root.
@@ -27,9 +27,17 @@ export default defineConfig({
         // This repository's default branch is `master`, not `main`.
         baseUrl: 'https://github.com/lkaric/nestjs-twilio/edit/master/docs/',
       },
+      // Expressive Code renders every fenced block on this site. The Sentry
+      // theme forces its own `sentry-monochrome` theme here, which is greyscale
+      // by design and strips syntax colour entirely. The plugin spreads user
+      // config over its defaults, so naming a theme restores highlighting while
+      // keeping the rest of the theme's code styling.
+      expressiveCode: {
+        themes: ['github-dark'],
+        emitExternalStylesheet: true,
+      },
       plugins: [
-        // Shared Sentry Starlight theme. It ships the CSS, applies the
-        // monochrome code theme wired under `markdown` below, and replaces
+        // Shared Sentry Starlight theme. It ships the CSS and replaces
         // Starlight's theme switcher with an empty component because the
         // theme is deliberately dark only.
         sentryStarlightTheme(),
@@ -92,43 +100,50 @@ export default defineConfig({
           ],
           // Order the corpus the way someone learning the library would read
           // it, rather than alphabetically.
-          promote: ['getting-started', 'configuration', 'features/**'],
-          demote: ['api/**', 'migration'],
+          promote: ['getting-started', 'examples', 'configuration', 'features/**', 'guides/**'],
+          demote: ['reference/**', 'api/**', 'migration'],
         }),
       ],
+      // Organised along Diataxis lines: a tutorial to learn from, how-to
+      // guides to work from, and reference to look things up in. The guides
+      // are titled as tasks rather than as features, because a reader arrives
+      // wanting to do something, not wanting to read about a feature.
       sidebar: [
         {
           label: 'Start Here',
           items: [
-            { label: 'Getting Started', slug: 'getting-started' },
-            { label: 'Configuration', slug: 'configuration' },
+            { label: 'Quick Start', slug: 'getting-started' },
+            { label: 'Example App', slug: 'examples' },
           ],
         },
         {
-          label: 'Features',
+          label: 'Guides',
           items: [
-            { label: 'Webhook Validation', slug: 'features/webhook-validation' },
-            { label: 'TwiML Responses', slug: 'features/twiml-responses' },
-            { label: 'Error Handling', slug: 'features/error-handling' },
-            { label: 'Multi-Account Clients', slug: 'features/multi-account' },
-            { label: 'Health Checks', slug: 'features/health-checks' },
-            { label: 'Access Tokens', slug: 'features/access-tokens' },
+            { label: 'Register the module', slug: 'configuration' },
+            { label: 'Validate webhook signatures', slug: 'features/webhook-validation' },
+            { label: 'Return TwiML responses', slug: 'features/twiml-responses' },
+            { label: 'Handle Twilio errors', slug: 'features/error-handling' },
+            { label: 'Use multiple accounts', slug: 'features/multi-account' },
+            { label: 'Add health checks', slug: 'features/health-checks' },
+            { label: 'Mint access tokens', slug: 'features/access-tokens' },
+            { label: 'Test your integration', slug: 'guides/testing' },
+          ],
+        },
+        {
+          label: 'Reference',
+          items: [
+            { label: 'Configuration options', slug: 'reference/configuration' },
+            // Injected by starlight-typedoc. Nested here so the generated API
+            // reference sits with the other reference material rather than
+            // floating at the top level.
+            typeDocSidebarGroup,
           ],
         },
         {
           label: 'Upgrading',
           items: [{ label: 'v4 → v5 Migration', slug: 'migration' }],
         },
-        // Injected by starlight-typedoc; position here controls where the
-        // generated reference appears in the sidebar.
-        typeDocSidebarGroup,
       ],
     }),
   ],
-  markdown: {
-    shikiConfig: {
-      // Pairs with sentryStarlightTheme(); the theme expects this code theme.
-      theme: monochromeCodeTheme,
-    },
-  },
 });

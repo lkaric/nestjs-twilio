@@ -1,5 +1,5 @@
 ---
-title: Error Handling
+title: Handle Twilio errors
 description: Map the Twilio SDK's RestException to Nest HTTP responses with TwilioExceptionFilter.
 ---
 
@@ -12,7 +12,7 @@ original status code, Twilio error code, message, and `more_info` link.
 
 ### Per-controller
 
-```ts
+```ts title="src/sms/sms.controller.ts"
 import { Controller, UseFilters } from '@nestjs/common';
 import { TwilioExceptionFilter, InjectTwilio } from 'nestjs-twilio';
 import type { Twilio } from 'twilio';
@@ -31,7 +31,7 @@ export class SmsController {
 
 ### Global, via `useGlobalFilters`
 
-```ts
+```ts title="src/main.ts"
 import { NestFactory } from '@nestjs/core';
 import { HttpAdapterHost } from '@nestjs/core';
 import { TwilioExceptionFilter } from 'nestjs-twilio';
@@ -44,7 +44,7 @@ await app.listen(3000);
 
 ### Global, via `APP_FILTER` provider
 
-```ts
+```ts title="src/app.module.ts"
 import { Module } from '@nestjs/common';
 import { APP_FILTER } from '@nestjs/core';
 import { TwilioExceptionFilter } from 'nestjs-twilio';
@@ -99,10 +99,8 @@ If `exception.status` isn't a number, `statusCode` falls back to `500`
 
 ## Reference
 
-### Exports
-
-- `TwilioExceptionFilter`: the `ExceptionFilter`, extending Nest's
-  `BaseExceptionFilter`.
-- `isTwilioRestException(exception)`: structural type guard for a Twilio
-  `RestException`.
-- `TwilioErrorResponse`: the response body type described above.
+See [`TwilioExceptionFilter`](/api/classes/twilioexceptionfilter/) for the
+filter itself, [`isTwilioRestException`](/api/functions/istwiliorestexception/)
+for the structural type guard it uses, and
+[`TwilioErrorResponse`](/api/interfaces/twilioerrorresponse/) for the full
+response body type.

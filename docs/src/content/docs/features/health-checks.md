@@ -1,5 +1,5 @@
 ---
-title: Health Checks
+title: Add health checks
 description: Report Twilio API reachability and credential validity through a Terminus health indicator.
 ---
 
@@ -26,7 +26,7 @@ import { TwilioHealthIndicator } from 'nestjs-twilio/terminus';
 ```
 
 :::note[Not in the generated API reference]
-The [API reference](/api/) is generated from the package root, so
+The [API reference](/api/readme/) is generated from the package root, so
 `TwilioHealthIndicator` does not appear there. This page is its documentation;
 its JSDoc still shows on hover in your editor.
 :::
@@ -41,7 +41,7 @@ build.
 
 ## Usage
 
-```ts
+```ts title="src/health/health.module.ts"
 import { Module } from '@nestjs/common';
 import { TerminusModule } from '@nestjs/terminus';
 import { TwilioHealthIndicator } from 'nestjs-twilio/terminus';
@@ -56,7 +56,7 @@ import { HealthController } from './health.controller';
 export class HealthModule {}
 ```
 
-```ts
+```ts title="src/health/health.controller.ts"
 import { Controller, Get } from '@nestjs/common';
 import { HealthCheck, HealthCheckService } from '@nestjs/terminus';
 import { TwilioHealthIndicator } from 'nestjs-twilio/terminus';
