@@ -24,15 +24,15 @@ believe it has. You can expect an initial response within 7 days.
 This package brokers credentials and verifies request authenticity, so the
 security-relevant surface is narrow and specific:
 
-- **`TwilioWebhookGuard`** — any way to make signature validation pass for a
+- **`TwilioWebhookGuard`**: any way to make signature validation pass for a
   request Twilio did not sign. This includes header spoofing through
   `X-Forwarded-Proto` / `X-Forwarded-Host`, body-hash mismatches on JSON
   payloads, and non-constant-time comparison.
-- **Credential handling** — any path that writes an `authToken`, `apiSecret`
+- **Credential handling**: any path that writes an `authToken`, `apiSecret`
   or API key into a log line, an error message, or a thrown exception. Module
   options validation is deliberately written to name the offending _field_
   without echoing its value.
-- **Supply chain** — the published tarball's contents and provenance
+- **Supply chain**: the published tarball's contents and provenance
   attestation.
 
 Out of scope: vulnerabilities in the `twilio` SDK itself (report those to
