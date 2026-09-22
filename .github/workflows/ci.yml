@@ -96,6 +96,17 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
 
+      # Test Analytics tracks failure rates, slow tests and flakes, so it is
+      # most valuable precisely when the suite fails. `!cancelled()` keeps the
+      # upload running after a failing test step, which would otherwise end the
+      # job before this point.
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          report-type: test_results
+
   # `engines.node` advertises >=20.19, which no runner in this toolchain can
   # execute on. Prove the claim directly instead: build with the toolchain,
   # then load the built artifacts under the floor version using plain node.
