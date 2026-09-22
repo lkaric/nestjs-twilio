@@ -320,7 +320,7 @@ describe('dependency injection', () => {
 
 describe('@TwilioWebhook()', () => {
   // The decorator previously only called SetMetadata, so routes it decorated
-  // were never actually guarded — requests with no signature passed straight
+  // were never actually guarded. Requests with no signature passed straight
   // through.
   it('binds TwilioWebhookGuard to the decorated handler', () => {
     class Controllerish {

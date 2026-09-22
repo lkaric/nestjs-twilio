@@ -13,8 +13,8 @@ import { WebhookController } from './webhook.controller.js';
 @Module({
   imports: [
     TerminusModule,
-    // Default client. Every Twilio SDK client option is a top-level key here —
-    // in v4 they were nested under `options`.
+    // Default client. Every Twilio SDK client option is a top-level key here.
+    // In v4 they were nested under `options`.
     TwilioModule.forRoot({
       accountSid: process.env.TWILIO_ACCOUNT_SID ?? 'ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
       authToken: process.env.TWILIO_AUTH_TOKEN ?? 'example_auth_token',
@@ -29,8 +29,8 @@ import { WebhookController } from './webhook.controller.js';
     }),
 
     // A second, independently credentialed client for a subaccount. It
-    // inherits everything above that it does not override — region, edge,
-    // logLevel and so on — and is injected with @InjectTwilio('billing').
+    // inherits everything above that it does not override (region, edge,
+    // logLevel and so on), and is injected with @InjectTwilio('billing').
     TwilioModule.registerClient({
       name: 'billing',
       accountSid: process.env.TWILIO_BILLING_ACCOUNT_SID ?? 'ACyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy',
@@ -39,7 +39,7 @@ import { WebhookController } from './webhook.controller.js';
 
     // A client authenticated with an API key rather than an auth token. Access
     // Tokens are signed with API keys, so this is what the /token routes mint
-    // against — Twilio does not accept auth-token-signed access tokens.
+    // against. Twilio does not accept auth-token-signed access tokens.
     TwilioModule.registerClient({
       name: 'realtime',
       accountSid: process.env.TWILIO_ACCOUNT_SID ?? 'ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',

@@ -5,7 +5,7 @@ import { TwilioTokenService } from 'nestjs-twilio';
  * Mints Access Tokens for Twilio's client-side SDKs.
  *
  * A browser or mobile app calls these endpoints, receives a short-lived JWT,
- * and uses it to talk to Twilio directly — your account credentials never
+ * and uses it to talk to Twilio directly. Your account credentials never
  * leave the server.
  *
  * Tokens are signed with an API key, so these routes mint against the

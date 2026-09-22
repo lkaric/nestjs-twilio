@@ -28,7 +28,7 @@ import { TwilioModule } from 'nestjs-twilio';
       authToken: 'auth_token_here',
       webhookAuthToken: 'webhook_token_override', // optional
       webhookUrl: 'https://example.com/webhooks', // optional, for proxy scenarios
-      region: 'ie1', // optional — flat, not nested under `options`
+      region: 'ie1', // optional, flat, not nested under `options`
       edge: 'sydney', // optional
     }),
   ],
@@ -37,7 +37,7 @@ export class AppModule {}
 ```
 
 Credentials are validated when the module initializes. `TwilioModule` throws
-a `BadRequestException` — never including the credential value itself — if:
+a `BadRequestException` (never including the credential value itself) if:
 
 - `accountSid` is missing or not a string
 - `accountSid` doesn't start with `"AC"`
@@ -59,7 +59,7 @@ TwilioModule.forRoot({
 });
 ```
 
-`apiSecret` is mandatory whenever `apiKey` is set — the secret is what signs
+`apiSecret` is mandatory whenever `apiKey` is set. The secret is what signs
 the request, so a key without it cannot authenticate anything.
 
 If both an `authToken` and an API key are supplied, the auth token wins,
@@ -102,13 +102,13 @@ export class AppModule {}
 ```
 
 The factory's return value is validated the same way as the synchronous
-`forRoot()` options, and it is flattened the same way — no `options` key.
+`forRoot()` options, and it is flattened the same way: no `options` key.
 
 ## Global registration
 
 `forRoot()` always registers `TwilioModule` globally. Import it once in your
 root module and `TwilioService`, the default client and every named client are
-available application-wide — there is no flag to set.
+available application-wide. There is no flag to set.
 
 This matches `TypeOrmCoreModule`, Mongoose's core module and
 `BullModule.forRoot()`, all of which register globally. It is also what allows
@@ -166,7 +166,7 @@ constructor and is optional.
 | `scheduling`          | `'fifo' \| 'lifo'`        | Socket reuse scheduling strategy.                                  |
 | `ca`                  | `string \| Buffer`        | Custom CA certificate for TLS requests.                            |
 
-These come directly from the `twilio` package's `ClientOpts` type — consult
+These come directly from the `twilio` package's `ClientOpts` type. Consult
 the [Twilio Node.js SDK documentation](https://www.twilio.com/docs/libraries/node) for
 behavior details.
 
@@ -179,7 +179,7 @@ Everything below is part of the public API and therefore covered by semver.
 | `TwilioClientOpts`           | interface | The credential fields plus every Twilio SDK `ClientOpts` key, flattened. `TwilioModuleOptions` extends it.                                                       |
 | `TwilioClientRegistration`   | interface | A named client passed to `registerClient()`. Every field except `name` is optional and inherited from `forRoot()`.                                               |
 | `TwilioClientOptionsFactory` | interface | Implemented by a class supplying a named client's options via `registerClientAsync({ useClass })`.                                                               |
-| `validateTwilioOptions`      | function  | The bootstrap validation the module runs for you. Exported so you can validate configuration yourself before constructing a module — useful in a config factory. |
+| `validateTwilioOptions`      | function  | The bootstrap validation the module runs for you. Exported so you can validate configuration yourself before constructing a module (useful in a config factory). |
 | `createTwilioClient`         | function  | The factory the module uses to build a client. Exported for tests and for advanced cases where you need a client outside Nest's DI container.                    |
 
 ```ts

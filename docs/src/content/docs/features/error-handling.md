@@ -60,8 +60,8 @@ export class AppModule {}
 `TwilioExceptionFilter` is declared with `@Catch()` (no argument), so it can
 be registered globally without a hard runtime dependency on the Twilio SDK's
 `RestException` class. It recognizes Twilio errors **structurally** via
-`isTwilioRestException()` — checking that the thrown value is an `Error`
-with a numeric `status` property — rather than an `instanceof` check.
+`isTwilioRestException()`, checking that the thrown value is an `Error`
+with a numeric `status` property, rather than an `instanceof` check.
 
 Any exception that is not a Twilio `RestException` is delegated to Nest's
 default handling via `BaseExceptionFilter`, so registering this filter
@@ -101,8 +101,8 @@ If `exception.status` isn't a number, `statusCode` falls back to `500`
 
 ### Exports
 
-- `TwilioExceptionFilter` — the `ExceptionFilter`, extending Nest's
+- `TwilioExceptionFilter`: the `ExceptionFilter`, extending Nest's
   `BaseExceptionFilter`.
-- `isTwilioRestException(exception)` — structural type guard for a Twilio
+- `isTwilioRestException(exception)`: structural type guard for a Twilio
   `RestException`.
-- `TwilioErrorResponse` — the response body type described above.
+- `TwilioErrorResponse`: the response body type described above.

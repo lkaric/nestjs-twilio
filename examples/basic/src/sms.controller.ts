@@ -27,7 +27,7 @@ export class SmsController {
 
   /**
    * Proves the two registered clients are distinct instances with their own
-   * credentials — the point of registerClient().
+   * credentials. That is the point of registerClient().
    */
   @Get('accounts')
   accounts(): { default: string; billing: string } {

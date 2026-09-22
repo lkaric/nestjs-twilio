@@ -1,6 +1,6 @@
 import { BadRequestException } from '@nestjs/common';
-// `twilio` is CommonJS. A named value import type-checks — the SDK declares
-// `export =` over a namespace — but throws under Node's ESM loader, because
+// `twilio` is CommonJS. A named value import type-checks (the SDK declares
+// `export =` over a namespace) but throws under Node's ESM loader, because
 // cjs-module-lexer cannot detect those names statically. A default import
 // always yields `module.exports`, so it is interop-safe in both builds.
 import twilio from 'twilio';
@@ -12,8 +12,8 @@ import { OPTIONS_TYPE } from './twilio.module-definition.js';
  * Validates Twilio module options at bootstrap.
  *
  * Runs automatically inside {@link createTwilioClient} and during module
- * initialisation. Call it directly only when you want to fail earlier — while
- * loading configuration, for example.
+ * initialisation. Call it directly only when you want to fail earlier, for
+ * example while loading configuration.
  *
  * Error messages name the offending field and never include its value, so a
  * failure is safe to log.
@@ -80,7 +80,7 @@ const API_KEY_FIELDS = ['apiKey', 'apiSecret'] as const;
  * This deliberately differs from the plain object spread `@nestjs/bullmq`
  * uses. The common way to configure a client is from the environment, and
  * `region: process.env.TWILIO_REGION` is `undefined` whenever that variable is
- * unset — under a plain spread that silently clears an inherited region and
+ * unset. Under a plain spread that silently clears an inherited region and
  * sends traffic to the default edge. Nothing is lost by inheriting instead:
  * `region` and `edge` are named values, so returning one client to the default
  * is expressed by naming it (`region: 'us1'`) rather than by erasing it.
@@ -89,7 +89,7 @@ const API_KEY_FIELDS = ['apiKey', 'apiSecret'] as const;
  * alternative *authentication modes*, not independent settings, so they are
  * inherited as a unit. A client that supplies either mode drops the inherited
  * other one. Merging them field-by-field means an inherited `authToken` wins
- * over an explicitly configured `apiKey` — making it impossible to register an
+ * over an explicitly configured `apiKey`, making it impossible to register an
  * API-key client beneath an auth-token root.
  *
  * @param shared - Options from `forRoot()`, or undefined when none is registered.

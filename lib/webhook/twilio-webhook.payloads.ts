@@ -2,7 +2,7 @@
  * Typed shapes for the bodies Twilio posts to your webhooks.
  *
  * Twilio sends webhooks as `application/x-www-form-urlencoded`, so **every
- * value arrives as a string** — `NumMedia` is `'2'`, not `2`. These interfaces
+ * value arrives as a string**: `NumMedia` is `'2'`, not `2`. These interfaces
  * model that faithfully rather than pretending otherwise; convert where you
  * need a number.
  *
@@ -12,7 +12,7 @@
  * which parameters it contains, so a new parameter never breaks verification.
  *
  * A few fields carry `@deprecated`. Those markers mirror Twilio's own
- * documentation — `SmsSid`, `SmsMessageSid` and `SmsStatus` are described
+ * documentation: `SmsSid`, `SmsMessageSid` and `SmsStatus` are described
  * upstream as "deprecated and included for backward compatibility". They are
  * not ours to retire: Twilio still sends them on every request, so omitting
  * them would leave real fields untypeable. Prefer the documented replacement
@@ -86,8 +86,8 @@ export interface TwilioGeoParams {
 /**
  * Media attached to an inbound message.
  *
- * Twilio numbers the keys from zero — `MediaUrl0`, `MediaContentType0`,
- * `MediaUrl1`, and so on — and `NumMedia` says how many there are. Because it
+ * Twilio numbers the keys from zero (`MediaUrl0`, `MediaContentType0`,
+ * `MediaUrl1`, and so on) and `NumMedia` says how many there are. Because it
  * arrives as a string, parse it before looping.
  *
  * @example
@@ -128,7 +128,7 @@ export interface TwilioWhatsAppParams {
 }
 
 /**
- * Parameters Twilio adds for rich messaging — buttons, flows and
+ * Parameters Twilio adds for rich messaging: buttons, flows and
  * channel-specific payloads.
  *
  * `InteractiveData`, `FlowData` and `ChannelMetadata` arrive as **stringified

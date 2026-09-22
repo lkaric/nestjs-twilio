@@ -33,7 +33,7 @@ its JSDoc still shows on hover in your editor.
 
 :::note[Why a subpath]
 If the indicator were exported from the package root, importing anything from
-`nestjs-twilio` would eagerly resolve `@nestjs/terminus` — and throw
+`nestjs-twilio` would eagerly resolve `@nestjs/terminus` and throw
 `ERR_MODULE_NOT_FOUND` for every consumer who hasn't installed it. The subpath
 keeps the root entry free of the optional peer, and CI asserts that on every
 build.
@@ -101,7 +101,7 @@ reachability and credential validity in a single call.
 
 The indicator reports **down** when:
 
-- the request fails — network error, invalid credentials, Twilio outage
+- the request fails: network error, invalid credentials, Twilio outage
 - the account status is not `active`, i.e. `suspended` or `closed`
 
 A suspended account still authenticates but cannot send anything, so treating

@@ -52,7 +52,7 @@ interface TwilioFilterHttpResponse {
  * keeps {@link TwilioExceptionFilter} working even in setups where the
  * `twilio` package's runtime export shape differs (major version drift,
  * duplicated module instances across bundlers, or the class being otherwise
- * unavailable) — anything that merely *looks* like a Twilio REST error is
+ * unavailable). Anything that merely *looks* like a Twilio REST error is
  * still handled correctly.
  *
  * @param exception - Value caught by the filter; may be any thrown value.
@@ -107,7 +107,7 @@ function toTwilioErrorResponse(exception: RestException): TwilioErrorResponse {
  * and `details` payload as a {@link TwilioErrorResponse} JSON body.
  *
  * Uses `@Catch()` (no argument) so it can be registered globally without a
- * hard runtime dependency on the Twilio SDK's `RestException` class — it
+ * hard runtime dependency on the Twilio SDK's `RestException` class. It
  * recognizes Twilio errors structurally via {@link isTwilioRestException}
  * (see that function's docs for why). Any exception that isn't a Twilio
  * `RestException` is delegated to Nest's default handling via

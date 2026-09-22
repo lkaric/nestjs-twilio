@@ -7,7 +7,7 @@ import { TwilioModuleOptions } from './twilio.interface.js';
  *
  * There is deliberately no `isGlobal` extra. `TwilioModule.forRoot()` always
  * registers globally, matching `TypeOrmCoreModule`, Mongoose's core module and
- * `BullModule.forRoot()` — every one of which sets `global: true`. Beyond
+ * `BullModule.forRoot()`, every one of which sets `global: true`. Beyond
  * convention, it is what makes `registerClient()` able to inherit the shared
  * options: a named client is registered as its own module, and a non-global
  * root would be invisible to it, so inheritance would depend on a user flag

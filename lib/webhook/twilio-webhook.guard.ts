@@ -73,7 +73,7 @@ export interface TwilioWebhookRequest {
  *
  * @example Global registration
  * ```ts
- * // app.module.ts — validates every inbound route.
+ * // app.module.ts: validates every inbound route.
  * providers: [{ provide: APP_GUARD, useClass: TwilioWebhookGuard }],
  * ```
  *

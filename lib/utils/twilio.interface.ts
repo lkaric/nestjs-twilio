@@ -61,8 +61,8 @@ export interface TwilioClientOpts extends ClientOpts {
  * A named client registered with `TwilioModule.registerClient()`.
  *
  * Every field except `name` is optional: anything omitted is inherited from
- * the options given to `forRoot()`. A field set to `undefined` also inherits —
- * only a defined value overrides. Supply full credentials when no `forRoot()`
+ * the options given to `forRoot()`. A field set to `undefined` also inherits.
+ * Only a defined value overrides. Supply full credentials when no `forRoot()`
  * is registered.
  *
  * @example

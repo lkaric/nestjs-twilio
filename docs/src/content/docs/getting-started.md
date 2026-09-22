@@ -17,7 +17,7 @@ serialization, automatic error mapping, and multi-account support.
 
 ## Installation
 
-As of v5, `twilio` is a **peer dependency** — it is no longer installed
+As of v5, `twilio` is a **peer dependency**. It is no longer installed
 transitively, so you must install it alongside this package:
 
 ```bash
@@ -95,15 +95,15 @@ export class SmsService {
 
 ## Next steps
 
-- [Configuration](/configuration/) — synchronous and asynchronous
+- [Configuration](/configuration/): synchronous and asynchronous
   registration, and the full client options table.
-- [Webhook validation](/features/webhook-validation/) — verify inbound
+- [Webhook validation](/features/webhook-validation/): verify inbound
   Twilio requests.
-- [TwiML responses](/features/twiml-responses/) — return TwiML XML from
+- [TwiML responses](/features/twiml-responses/): return TwiML XML from
   controllers.
-- [Error handling](/features/error-handling/) — map Twilio SDK errors to
+- [Error handling](/features/error-handling/): map Twilio SDK errors to
   HTTP responses.
-- [Multi-account clients](/features/multi-account/) — register additional
+- [Multi-account clients](/features/multi-account/): register additional
   named clients for subaccounts.
 
 Upgrading from v4? See the [migration guide](/migration/).

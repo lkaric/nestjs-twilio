@@ -48,7 +48,7 @@ Verify with `npm ls @nestjs/common`. If you are on Nest 9 or 10, stay on
 
 `reflect-metadata` (`^0.1.12 || ^0.2.0`) and `rxjs` (`^7.8.0`) are now declared
 peers. They were already required transitively by Nest, so in most projects
-this needs no change — but a strict package manager may now warn if either is
+this needs no change, but a strict package manager may now warn if either is
 missing.
 
 `@nestjs/terminus` (`^11 || ^12`) is an **optional** peer, required only if you
@@ -124,7 +124,7 @@ Everything public is exported from the package root.
 
 ---
 
-## 8. `isGlobal` is gone — the module is always global
+## 8. `isGlobal` is gone: the module is always global
 
 v4 accepted an `isGlobal` flag, defaulting to `false`. v5 removes it and always
 registers globally, matching `TypeOrmCoreModule`, Mongoose's core module and

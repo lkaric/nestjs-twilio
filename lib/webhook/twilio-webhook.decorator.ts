@@ -9,7 +9,7 @@ import type { TwilioWebhookOptions } from './twilio-webhook.options.js';
  * Validates that a request was signed by Twilio, and configures how.
  *
  * Binds {@link TwilioWebhookGuard} to the decorated route or controller and
- * records the supplied options for it to read — so the decorator alone is
+ * records the supplied options for it to read, so the decorator alone is
  * sufficient. There is no separate `@UseGuards()` to remember, and therefore
  * no way to record webhook options while leaving the route unprotected.
  *

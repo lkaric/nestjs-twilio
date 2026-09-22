@@ -6,12 +6,12 @@ description: Validate inbound Twilio webhook requests with TwilioWebhookGuard an
 Twilio signs every webhook request it sends (SMS, voice, status callbacks,
 ...) with an `X-Twilio-Signature` header. `TwilioWebhookGuard` recomputes
 that signature for the exact URL and body the guard reconstructs, and
-rejects the request if it doesn't match — byte for byte, verified with the
-`twilio` SDK's constant-time comparison.
+rejects the request if it doesn't match. The comparison is byte for byte,
+using the `twilio` SDK's constant-time comparison.
 
 ## Basic usage
 
-`@TwilioWebhook()` is all you need — it binds the guard and records the
+`@TwilioWebhook()` is all you need: it binds the guard and records the
 route's options in one step:
 
 ```ts
@@ -38,8 +38,8 @@ the second decorator left the route completely unvalidated while looking
 protected.
 :::
 
-You can still reference `TwilioWebhookGuard` directly — for example to register
-it globally with `APP_GUARD` — but you do not need to pair it with the
+You can still reference `TwilioWebhookGuard` directly (for example to register
+it globally with `APP_GUARD`), but you do not need to pair it with the
 decorator.
 
 `@TwilioWebhook()` applies to a controller class (setting the default for
@@ -162,8 +162,8 @@ handleSms(@Body() payload: TwilioIncomingMessagePayload) {
 | `TwilioIncomingCallPayload`    | An inbound voice call, and any TwiML `action` callback        |
 | `TwilioCallStatusPayload`      | A call `StatusCallback`, adding duration and recording fields |
 
-Supporting unions — `TwilioMessageStatus`, `TwilioCallStatus` and
-`TwilioCallDirection` — constrain the status fields to the values Twilio
+The supporting unions `TwilioMessageStatus`, `TwilioCallStatus` and
+`TwilioCallDirection` constrain the status fields to the values Twilio
 documents, so a typo in a comparison is a compile error.
 
 :::caution[Every value is a string]
@@ -202,10 +202,10 @@ verification.
 
 ### Exports
 
-- `TwilioWebhookGuard` — the `CanActivate` guard.
-- `TwilioWebhook(options?)` — route/class decorator setting per-route
+- `TwilioWebhookGuard`: the `CanActivate` guard.
+- `TwilioWebhook(options?)`: route/class decorator setting per-route
   options.
-- `TWILIO_WEBHOOK_OPTIONS` — DI token for the module-level default options,
+- `TWILIO_WEBHOOK_OPTIONS`: DI token for the module-level default options,
   and the metadata key `TwilioWebhookGuard` reads via `Reflector`.
-- `TwilioWebhookRequest` — the minimal request shape the guard reads
+- `TwilioWebhookRequest`: the minimal request shape the guard reads
   (`protocol`, `originalUrl`, `url`, `headers`, `body`, `rawBody`).

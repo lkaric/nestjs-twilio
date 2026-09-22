@@ -16,7 +16,7 @@ const options = (extra: Record<string, unknown>) =>
 
 // The Twilio SDK constructor is `new Twilio(username, password, opts)`. Which
 // value goes where depends on the auth mode, and getting it wrong produces a
-// client that authenticates against nothing — every request fails, with no
+// client that authenticates against nothing. Every request fails, with no
 // local signal. These assertions pin the mapping.
 describe('client authentication', () => {
   describe('auth token', () => {
@@ -132,7 +132,7 @@ describe('credential validation', () => {
 
 // `authToken` and `apiKey`/`apiSecret` are alternative authentication modes,
 // not independent settings. Merging them field-by-field lets an inherited
-// value outrank an explicitly configured one — which made it impossible to
+// value outrank an explicitly configured one, which made it impossible to
 // register an API-key client beneath an auth-token root. The example app
 // caught this; these assertions keep it caught.
 describe('credential inheritance', () => {

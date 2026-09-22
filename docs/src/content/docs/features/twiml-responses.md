@@ -5,7 +5,7 @@ description: Return VoiceResponse, MessagingResponse, and FaxResponse builders d
 
 Twilio's voice, messaging, and fax webhooks expect an XML (TwiML) response.
 `TwimlInterceptor` lets a controller handler return a `twilio` SDK TwiML
-builder instance directly — the interceptor serializes it to XML and sets
+builder instance directly. The interceptor serializes it to XML and sets
 the `Content-Type` header for you.
 
 ## Basic usage
@@ -28,7 +28,7 @@ export class SmsController {
 ```
 
 This works the same way for `VoiceResponse` and `FaxResponse` builders from
-the `twilio` SDK — `TwimlInterceptor` recognizes any TwiML builder instance
+the `twilio` SDK. `TwimlInterceptor` recognizes any TwiML builder instance
 via `value instanceof TwiML` and passes non-TwiML return values through
 unchanged.
 
@@ -77,7 +77,7 @@ replySms() {
 
 `TwimlInterceptor` only acts on HTTP responses (`context.getType() ===
 'http'`) whose handler returned a TwiML builder instance. For every other
-return value, it passes the data through untouched — so it is safe to apply
+return value, it passes the data through untouched, so it is safe to apply
 globally alongside handlers that return plain JSON.
 
 ## Reference
@@ -90,13 +90,13 @@ globally alongside handlers that return plain JSON.
 
 ### Exports
 
-- `TwimlInterceptor` — the `NestInterceptor`. Accepts an optional
+- `TwimlInterceptor`: the `NestInterceptor`. Accepts an optional
   `TwimlInterceptorOptions` in its constructor.
-- `TwimlResponseType(contentType?)` — method decorator overriding the
+- `TwimlResponseType(contentType?)`: method decorator overriding the
   `Content-Type` for a single route.
-- `isTwimlResponse(value)` — type guard identifying a Twilio TwiML builder
+- `isTwimlResponse(value)`: type guard identifying a Twilio TwiML builder
   instance.
-- `TWIML_RESPONSE_TYPE_METADATA` — the metadata key `TwimlResponseType`
+- `TWIML_RESPONSE_TYPE_METADATA`: the metadata key `TwimlResponseType`
   writes to and `TwimlInterceptor` reads from.
-- `DEFAULT_TWIML_CONTENT_TYPE` — the default `'text/xml'` content type
+- `DEFAULT_TWIML_CONTENT_TYPE`: the default `'text/xml'` content type
   constant.

@@ -108,7 +108,7 @@ export interface TwilioSyncTokenOptions extends TwilioTokenOptions {
 }
 
 /**
- * Options for a token carrying grants you construct yourself — TaskRouter,
+ * Options for a token carrying grants you construct yourself: TaskRouter,
  * Playback, or several grants at once.
  */
 export interface TwilioCustomTokenOptions extends TwilioTokenOptions {

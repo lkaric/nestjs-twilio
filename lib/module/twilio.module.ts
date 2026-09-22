@@ -82,7 +82,7 @@ function createClientProvider(
  * NestJS module for injecting Twilio SDK clients.
  *
  * `forRoot()` configures the default client and the options every named client
- * inherits. `registerClient()` adds further clients — typically subaccounts —
+ * inherits. `registerClient()` adds further clients (typically subaccounts)
  * which inherit those options and override what they need.
  *
  * The module registers globally, as `TypeOrmCoreModule`, Mongoose's core module
@@ -127,7 +127,7 @@ function createClientProvider(
     {
       // `@InjectTwilio()` with no name resolves this token. Deriving it from
       // TwilioService rather than building a second client keeps a single
-      // instance — one connection pool, one set of credentials — whichever
+      // instance (one connection pool, one set of credentials) whichever
       // injection style a consumer picks.
       provide: getTwilioClientToken(),
       useFactory: (service: TwilioService) => service.client,
@@ -268,8 +268,8 @@ export class TwilioModule extends ConfigurableModuleClass {
 
   /**
    * Named clients are registered as their own modules, so the shared options
-   * from `forRoot()` are only reachable if the root is global — the same reason
-   * `BullModule.forRoot()`, `TypeOrmCoreModule` and Mongoose's core module are.
+   * from `forRoot()` are only reachable if the root is global, for the same
+   * reason `BullModule.forRoot()`, `TypeOrmCoreModule` and Mongoose's core module are.
    * Exporting the options token is what lets a client module inject it.
    */
   private static asGlobalRoot(definition: DynamicModule): DynamicModule {

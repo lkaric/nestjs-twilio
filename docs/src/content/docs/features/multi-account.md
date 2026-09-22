@@ -4,8 +4,8 @@ description: Register additional named Twilio clients for subaccounts with regis
 ---
 
 `TwilioModule.forRoot()` configures the default client **and** the options every
-named client inherits. `TwilioModule.registerClient()` adds further clients —
-typically Twilio subaccounts — which inherit those options and override only
+named client inherits. `TwilioModule.registerClient()` adds further clients
+(typically Twilio subaccounts) which inherit those options and override only
 what differs.
 
 This mirrors `BullModule.forRoot()` / `BullModule.registerQueue()` in
@@ -55,7 +55,7 @@ Names are matched case-insensitively, so `'Billing'` and `'billing'` resolve to
 the same client. `@InjectTwilio()` with no argument resolves the default client
 from `forRoot()`.
 
-To resolve the token directly — when wiring a provider by hand, for example —
+To resolve the token directly (when wiring a provider by hand, for example),
 use `getTwilioClientToken('billing')`.
 
 ## What is inherited
@@ -111,7 +111,7 @@ TwilioModule.registerClient({ name: 'realtime', apiKey, apiSecret });
 
 Merging them field-by-field would let the inherited `authToken` outrank the
 explicitly configured `apiKey`, making it impossible to register an API-key
-client — the kind [Access Tokens](/features/access-tokens/) require — beneath
+client (the kind [Access Tokens](/features/access-tokens/) require) beneath
 an auth-token root.
 
 Everything that is not a credential, including `region` and `edge`, keeps
@@ -193,10 +193,10 @@ own module, and a non-global root would be invisible to it.
 
 ## API
 
-- `TwilioModule.forRoot(options)` — the default client, and the options named
+- `TwilioModule.forRoot(options)`: the default client, and the options named
   clients inherit
 - `TwilioModule.forRootAsync({ useFactory | useClass | useExisting, inject?, imports? })`
-- `TwilioModule.registerClient({ name, ...overrides })` — an additional named client
+- `TwilioModule.registerClient({ name, ...overrides })`: an additional named client
 - `TwilioModule.registerClientAsync({ name, useFactory | useClass | useExisting, inject?, imports? })`
-- `getTwilioClientToken(name?)` — the DI token for a client
-- `@InjectTwilio(name?)` — inject a client
+- `getTwilioClientToken(name?)`: the DI token for a client
+- `@InjectTwilio(name?)`: inject a client

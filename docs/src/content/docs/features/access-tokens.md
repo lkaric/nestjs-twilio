@@ -3,10 +3,10 @@ title: Access Tokens
 description: Mint short-lived Access Tokens so browser and mobile clients can use Twilio's Voice, Video, Conversations and Sync SDKs.
 ---
 
-Twilio's client-side SDKs — [Voice](https://www.twilio.com/docs/voice/sdks),
+Twilio's client-side SDKs ([Voice](https://www.twilio.com/docs/voice/sdks),
 [Video](https://www.twilio.com/docs/video),
 [Conversations](https://www.twilio.com/docs/conversations) and
-[Sync](https://www.twilio.com/docs/sync) — authenticate with **Access Tokens**:
+[Sync](https://www.twilio.com/docs/sync)) authenticate with **Access Tokens**:
 short-lived JWTs your server mints so a browser or phone can talk to Twilio
 directly, without ever holding your account credentials.
 
@@ -52,7 +52,7 @@ requests but [cannot create Access
 Tokens](https://www.twilio.com/docs/iam/api-keys/restricted-api-keys).
 
 All three types share the `SK` prefix, so this can only surface as an error
-from Twilio at token-creation time — it is not detectable locally.
+from Twilio at token-creation time. It is not detectable locally.
 :::
 
 ## Per-product helpers
@@ -64,8 +64,8 @@ from Twilio at token-creation time — it is not detectable locally.
 | `createChatToken()`  | Conversations      | `serviceSid`, `pushCredentialSid`                                      |
 | `createSyncToken()`  | Sync               | `serviceSid`                                                           |
 
-Every helper accepts the shared JWT settings — `identity`, `ttl`, `nbf` and
-`region` — alongside its grant-specific options.
+Every helper accepts the shared JWT settings (`identity`, `ttl`, `nbf` and
+`region`) alongside its grant-specific options.
 
 ```ts
 this.tokens.createVideoToken({ identity: 'alice', room: 'daily-standup' });
@@ -90,7 +90,7 @@ this.tokens.createToken({
 });
 ```
 
-A token with no grants is rejected — it could not access anything.
+A token with no grants is rejected. It could not access anything.
 
 ## Named clients
 

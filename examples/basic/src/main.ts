@@ -9,7 +9,7 @@ async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule, {
     // Required for JSON webhooks. Twilio signs those with a bodySHA256 query
     // parameter, and the guard needs the exact bytes received to verify the
-    // hash — a re-serialized body will not match.
+    // hash. A re-serialized body will not match.
     rawBody: true,
   });
 

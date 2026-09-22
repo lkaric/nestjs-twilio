@@ -11,7 +11,7 @@ By participating you agree to the [Code of Conduct](./CODE_OF_CONDUCT.md).
 | ------- | -------------------------- | ------------------------------------------- |
 | Node.js | `>=20.19`                  | The pinned version lives in `.node-version` |
 | pnpm    | pinned in `packageManager` | `corepack enable` picks it up automatically |
-| Git     | any recent                 | —                                           |
+| Git     | any recent                 | N/A                                         |
 
 ```bash
 corepack enable
@@ -33,7 +33,7 @@ pnpm install
 | `pnpm test`                         | Unit tests (Vitest, mocked SDK)                  |
 | `pnpm test:watch`                   | Unit tests in watch mode                         |
 | `pnpm test:coverage`                | Unit tests with coverage                         |
-| `pnpm test:integration`             | Live-API suite — requires real credentials       |
+| `pnpm test:integration`             | Live-API suite: requires real credentials        |
 | `pnpm type-check`                   | `tsc --noEmit`                                   |
 | `pnpm lint` / `pnpm lint:fix`       | oxlint                                           |
 | `pnpm format` / `pnpm format:check` | Prettier                                         |
@@ -51,7 +51,7 @@ The `pre-push` hook already runs `type-check` and `test` for you.
 
 ## Branch naming
 
-`<type>/<short-description>`, using the same types as the commit convention —
+`<type>/<short-description>`, using the same types as the commit convention,
 for example `feat/webhook-guard`, `fix/options-validation`,
 `docs/migration-guide`.
 
@@ -109,13 +109,13 @@ BREAKING CHANGE: `options: { region }` is now `region` at the top level.
 - **Document exports.** Every public symbol carries JSDoc with an `@example`;
   this is what shows up on hover in a consumer's editor.
 - **Import the `twilio` package root** in runtime code. Deep paths such as
-  `twilio/lib/rest/Twilio` are not a stable entry point — import them for types
+  `twilio/lib/rest/Twilio` are not a stable entry point. Import them for types
   only, with `import type`.
 - **Formatting is not a review topic.** Prettier runs in the `pre-commit` hook.
 
 ## Tests
 
-Unit tests live in `lib/__tests__/` and mock the Twilio SDK — `pnpm test` must
+Unit tests live in `lib/__tests__/` and mock the Twilio SDK: `pnpm test` must
 never hit the network, so anyone can run the suite without credentials.
 
 A test must fail if the behaviour it covers regresses. Tests that assert on
@@ -139,17 +139,17 @@ Copy `.env.example` to `.env` to get started.
 
 Every pull request runs `.github/workflows/ci.yml`:
 
-- **lint** — oxlint plus a Prettier formatting check
-- **type-check** — `tsc --noEmit`
-- **test** — Vitest on Node 20.19, 22.12 and 24
-- **build** — dual build, asserting both module formats emit and that
+- **lint**: oxlint plus a Prettier formatting check
+- **type-check**: `tsc --noEmit`
+- **test**: Vitest on Node 20.19, 22.12 and 24
+- **build**: dual build, asserting both module formats emit and that
   `emitDecoratorMetadata` survives (Nest DI breaks silently without it)
-- **package** — `publint --strict` and `attw --pack`
+- **package**: `publint --strict` and `attw --pack`
 
 These report into a single required check named **CI**.
 
 Pull requests are also reviewed automatically by CodeRabbit, configured in
-[`.coderabbit.yaml`](./.coderabbit.yaml). Its comments are advisory — a human
+[`.coderabbit.yaml`](./.coderabbit.yaml). Its comments are advisory. A human
 approval is what merges a pull request.
 
 ## Releases
@@ -164,11 +164,11 @@ the workflow with `dry-run` enabled.
 
 ## Reporting issues
 
-**Bugs** — include a minimal reproduction, plus the versions of
+**Bugs**: include a minimal reproduction, plus the versions of
 `nestjs-twilio`, `@nestjs/common`, `twilio` and Node.js, and the full error with
 stack trace.
 
-**Features** — describe the use case first, then the proposed API. Explain what
+**Features**: describe the use case first, then the proposed API. Explain what
 you tried instead and why it was not sufficient.
 
 Never paste real Account SIDs, auth tokens or API keys into an issue.

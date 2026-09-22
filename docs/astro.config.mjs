@@ -3,6 +3,7 @@ import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import starlightTypeDoc, { typeDocSidebarGroup } from 'starlight-typedoc';
 import starlightLlmsTxt from 'starlight-llms-txt';
+import sentryStarlightTheme, { monochromeCodeTheme } from '@sentry/starlight-theme';
 
 export default defineConfig({
   // Served from a custom subdomain, so the site lives at the root.
@@ -27,6 +28,12 @@ export default defineConfig({
         baseUrl: 'https://github.com/lkaric/nestjs-twilio/edit/master/docs/',
       },
       plugins: [
+        // Shared Sentry Starlight theme. It ships the CSS, applies the
+        // monochrome code theme wired under `markdown` below, and replaces
+        // Starlight's theme switcher with an empty component because the
+        // theme is deliberately dark only.
+        sentryStarlightTheme(),
+
         // Generates the API reference from the library's own JSDoc, so the
         // reference cannot drift from the source the way a hand-written one
         // would. Entry point is the public barrel: anything not exported from
@@ -118,4 +125,10 @@ export default defineConfig({
       ],
     }),
   ],
+  markdown: {
+    shikiConfig: {
+      // Pairs with sentryStarlightTheme(); the theme expects this code theme.
+      theme: monochromeCodeTheme,
+    },
+  },
 });

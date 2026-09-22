@@ -39,10 +39,10 @@ npm install nestjs-twilio twilio
 `reflect-metadata` and `rxjs` are peer dependencies too, and are already
 present in any Nest application. `@nestjs/terminus` is an optional peer.
 
-> **On the Node floor.** The test suite runs on Node 22 and 24. Node 20.19 is
-> supported and CI verifies on every run that both the CommonJS and ES module
-> builds load there with identical export surfaces, but the unit suite itself
-> cannot execute on 20.x — Vitest 5 requires `^22.12 || ^24 || >=26`. If you
+> **Node.js versions.** The test suite runs on Node 22 and 24. Node 20.19 is
+> supported, and CI verifies on every run that both the CommonJS and ES module
+> builds load there with identical export surfaces. The unit suite itself
+> cannot execute on 20.x: Vitest 5 requires `^22.12 || ^24 || >=26`. If you
 > run Node 20, prefer pinning a patch release you have exercised yourself.
 
 ## Quick Start
@@ -234,7 +234,7 @@ v5.0.0 introduces breaking changes. See [MIGRATION.md](./MIGRATION.md) for a com
 
 **Key changes:**
 
-- `twilio` moved to `peerDependencies` — install it alongside this package
+- `twilio` moved to `peerDependencies`: install it alongside this package
 - Nest peer range is now `^11 || ^12`
 - Minimum Node.js is 20.19
 - Client options are flat: `options: { region }` is now `region`

@@ -30,7 +30,7 @@ const MAX_TTL_SECONDS = 86_400;
 const VOICE_IDENTITY_PATTERN = /^[A-Za-z0-9_]+$/;
 
 /**
- * Mints Access Tokens for Twilio's client-side SDKs — Voice, Video,
+ * Mints Access Tokens for Twilio's client-side SDKs: Voice, Video,
  * Conversations, Sync, TaskRouter and Playback.
  *
  * Access Tokens are short-lived credentials your server issues so a browser or
@@ -260,8 +260,8 @@ export class TwilioTokenService {
   /**
    * Extract signing credentials from a registered client.
    *
-   * A client built from an auth token cannot sign access tokens — Twilio
-   * requires an API key — so this reports that rather than emitting a token
+   * A client built from an auth token cannot sign access tokens (Twilio
+   * requires an API key), so this reports that rather than emitting a token
    * that would be rejected.
    *
    * @throws BadRequestException When the client is unknown or was not

@@ -21,7 +21,7 @@ export class HealthController {
    *
    * The Twilio SDK does not accept an `AbortSignal`, so `withTimeout()` marks
    * the indicator down without cancelling the in-flight request. Set the SDK's
-   * own `timeout` client option to bound it — this example does not, to keep
+   * own `timeout` client option to bound it. This example does not, to keep
    * the module configuration minimal.
    */
   @Get()
