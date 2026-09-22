@@ -7,7 +7,7 @@ packages:
 # pnpm 11 no longer reads the "pnpm" field in package.json; settings live here.
 # It also refuses to run dependency lifecycle scripts unless each package is
 # explicitly allowed, and exits non-zero otherwise. These ship prebuilt platform
-# binaries — their install scripts only put those binaries in place.
+# binaries; their install scripts only put those binaries in place.
 allowBuilds:
   '@swc/core': true
   lefthook: true

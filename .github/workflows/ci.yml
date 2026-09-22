@@ -69,6 +69,44 @@ jobs:
       - name: Run unit tests
         run: pnpm test
 
+  # Coverage is a separate job on purpose. Folding the upload into a leg of the
+  # `test` matrix made a failed upload surface as "Test (Node 24) failed", which
+  # is a lie: the tests passed. It also made both legs pay for coverage
+  # instrumentation when only one of them used the result.
+  coverage:
+    name: Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up toolchain
+        uses: ./.github/actions/setup
+
+      - name: Run unit tests with coverage
+        run: pnpm test:coverage
+
+      # Token auth rather than OIDC. Codecov requires a token for uploads on a
+      # protected branch of a public repository, and `master` is protected, so
+      # `use_oidc: true` was rejected with "Repository not found" despite the
+      # repository being active on codecov.io.
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
+
+      # Test Analytics tracks failure rates, slow tests and flakes, so it is
+      # most valuable precisely when the suite fails. `!cancelled()` keeps the
+      # upload running after a failing test step, which would otherwise end the
+      # job before this point.
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          report-type: test_results
+
   # `engines.node` advertises >=20.19, which no runner in this toolchain can
   # execute on. Prove the claim directly instead: build with the toolchain,
   # then load the built artifacts under the floor version using plain node.
@@ -122,9 +160,9 @@ jobs:
       - name: Assert decorator metadata is preserved
         run: |
           grep -q 'design:paramtypes' dist/cjs/module/twilio.service.js \
-            || { echo "::error::CJS build lost emitDecoratorMetadata — Nest DI will break"; exit 1; }
+            || { echo "::error::CJS build lost emitDecoratorMetadata, Nest DI will break"; exit 1; }
           grep -q 'design:paramtypes' dist/esm/module/twilio.service.js \
-            || { echo "::error::ESM build lost emitDecoratorMetadata — Nest DI will break"; exit 1; }
+            || { echo "::error::ESM build lost emitDecoratorMetadata, Nest DI will break"; exit 1; }
 
       - name: Upload build output
         uses: actions/upload-artifact@v7
@@ -250,7 +288,7 @@ jobs:
 
           # Access tokens are signed with an API key. The `realtime` client is
           # registered with one beneath an auth-token root, so this also proves
-          # the inherited auth token does not outrank the explicit API key —
+          # the inherited auth token does not outrank the explicit API key,
           # the defect the example app surfaced.
           curl -s -o /tmp/token.json 'http://localhost:3000/token/voice?identity=alice'
           node -e "
@@ -294,7 +332,7 @@ jobs:
   ci:
     name: CI
     runs-on: ubuntu-latest
-    needs: [lint, type-check, test, smoke, build, package, docs, example]
+    needs: [lint, type-check, test, coverage, smoke, build, package, docs, example]
     if: always()
     steps:
       - name: Verify all upstream jobs succeeded

@@ -38,8 +38,8 @@ reviews:
     # Drafts are work in progress; reviewing them burns quota and adds noise.
     drafts: false
     # Regex, matched against the target branch. `.*` covers every base, so
-    # stacked pull requests that target another feature branch — not just
-    # master — are reviewed too.
+    # stacked pull requests that target another feature branch, not just
+    # master, are reviewed too.
     base_branches:
       - '.*'
 
@@ -56,11 +56,11 @@ reviews:
         This is a published NestJS library: every exported symbol is a public
         API contract. Flag (1) any non-additive change to an exported
         signature, type or barrel export, since it forces a semver-major;
-        (2) `any`, non-null assertions and unchecked casts — this repo requires
+        (2) `any`, non-null assertions and unchecked casts: this repo requires
         `unknown` plus explicit narrowing; (3) an exported symbol whose JSDoc
         is missing, stale, or lacks an `@example`; (4) DI wiring that builds
         provider tokens by hand instead of using `getTwilioClientToken()`;
-        (5) runtime imports from `twilio/lib/**` — only the package root is a
+        (5) runtime imports from `twilio/lib/**`: only the package root is a
         stable entry point, deep paths are acceptable for types only.
 
     - path: 'lib/webhook/**'
@@ -77,7 +77,7 @@ reviews:
       instructions: >-
         Tests must assert observable behaviour, not implementation detail. Flag
         any test that would still pass with the feature deleted, any assertion
-        against source text, and any test performing a live Twilio API call —
+        against source text, and any test performing a live Twilio API call:
         live calls belong behind the manually dispatched integration workflow.
 
     - path: '.github/**'

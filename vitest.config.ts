@@ -14,9 +14,14 @@ export default defineConfig({
     // The unit suite is introduced incrementally across this release; an empty
     // run is not a failure.
     passWithNoTests: true,
+    // Codecov Test Analytics ingests JUnit XML to track failure rates, slow
+    // tests and flakes. Only emitted under CI so local runs do not litter the
+    // working tree with a report nobody reads.
+    reporters: process.env.CI ? ['default', 'junit'] : ['default'],
+    outputFile: { junit: 'test-report.junit.xml' },
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'html'],
+      reporter: ['text', 'json', 'html', 'lcov'],
       include: ['lib/**/*.ts'],
       exclude: ['lib/**/*.test.ts', 'lib/**/*.interface.ts'],
       lines: 70,
