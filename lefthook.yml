@@ -1,0 +1,28 @@
+# yaml-language-server: $schema=https://json.schemastore.org/lefthook.json
+---
+pre-commit:
+  parallel: true
+  commands:
+    lint:
+      glob: '*.{ts,mjs}'
+      # `pnpm lint` is bound to fixed paths; invoke the binary directly so the
+      # staged file list is the only input.
+      run: pnpm exec oxlint --fix {staged_files}
+      stage_fixed: true
+    format:
+      glob: '*.{ts,js,mjs,json,md,yml,yaml}'
+      run: pnpm exec prettier --write {staged_files}
+      stage_fixed: true
+
+commit-msg:
+  commands:
+    commitlint:
+      run: pnpm exec commitlint --edit {1}
+
+pre-push:
+  parallel: true
+  commands:
+    type-check:
+      run: pnpm type-check
+    test:
+      run: pnpm test

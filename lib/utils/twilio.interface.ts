@@ -1,6 +1,4 @@
-import Twilio from 'twilio/lib/rest/Twilio';
-
-import type { ClientOpts } from 'twilio/lib/base/BaseTwilio';
+import type { Twilio, ClientOpts } from 'twilio';
 
 export type TwilioClient = Twilio;
 

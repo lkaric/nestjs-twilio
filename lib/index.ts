@@ -1,2 +1,2 @@
-export * from './module';
-export * from './utils/twilio.interface';
+export * from './module/index.js';
+export * from './utils/twilio.interface.js';

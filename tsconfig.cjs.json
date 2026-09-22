@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "./tsconfig.json",
+  // The CommonJS pass deliberately leaves nodenext: classic resolution accepts
+  // the same extensioned specifiers the ESM sources use, and `module: commonjs`
+  // downlevels them to require(). dist/cjs/package.json pins "type":"commonjs"
+  // so Node reads the output as CJS despite the ESM-first root manifest.
+  "compilerOptions": {
+    "outDir": "dist/cjs",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "types": ["node"]
+  },
+  "exclude": ["node_modules", "coverage", "dist", "docs", "lib/__tests__/**"]
+}

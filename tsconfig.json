@@ -1,19 +1,27 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
-    "target": "ES6",
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    // The package is authored ESM-first ("type": "module"). nodenext makes
+    // TypeScript apply Node's real resolution rules, so an import specifier
+    // that Node could not resolve at runtime is a compile error here instead
+    // of an ERR_MODULE_NOT_FOUND in a consumer's app.
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
     "outDir": "dist",
     "rootDir": "lib",
-    "skipLibCheck": true,
     "declaration": true,
     "sourceMap": false,
-    "noImplicitAny": true,
-    "esModuleInterop": true,
     "strict": true,
-    "module": "commonjs"
+    "noImplicitAny": true,
+    "skipLibCheck": true,
+    "types": ["node", "vitest/globals"]
   },
   "include": ["lib/**/*"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "dist", "coverage"]
 }

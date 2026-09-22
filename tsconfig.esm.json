@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "./tsconfig.json",
+  // Inherits module/moduleResolution: nodenext. Because the root package.json
+  // declares "type": "module", nodenext emits real ES modules here and
+  // enforces explicit file extensions on every relative specifier.
+  "compilerOptions": {
+    "outDir": "dist/esm",
+    "types": ["node"]
+  },
+  "exclude": ["node_modules", "coverage", "dist", "docs", "lib/__tests__/**"]
+}

@@ -1,19 +1,14 @@
 import { Test } from '@nestjs/testing';
 
-import { TwilioModule, TwilioService } from '../module';
+import { TwilioModule, TwilioService } from '../module/index.js';
 
-import { OPTIONS_TYPE } from '../utils';
+import { OPTIONS_TYPE } from '../utils/index.js';
 
 describe('TwiliModule', () => {
-  const {
-    TWILIO_ACCOUNT_SID,
-    TWILIO_AUTH_TOKEN,
-    TWILIO_PHONE_NUMBER,
-    TWILIO_TARGET_PHONE_NUMBER,
-  } = process.env;
+  const { TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER, TWILIO_TARGET_PHONE_NUMBER } =
+    process.env;
 
-  if (!TWILIO_PHONE_NUMBER)
-    throw new Error('No Twilio phone number defined in `.env`!');
+  if (!TWILIO_PHONE_NUMBER) throw new Error('No Twilio phone number defined in `.env`!');
   if (!TWILIO_TARGET_PHONE_NUMBER)
     throw new Error('No testing target phone number defined in `.env`!');
 

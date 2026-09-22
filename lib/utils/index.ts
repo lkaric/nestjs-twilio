@@ -1,3 +1,3 @@
-export * from './twilio.module-definition';
-export * from './twilio.interface';
-export * from './twilio.utils';
+export * from './twilio.module-definition.js';
+export * from './twilio.interface.js';
+export * from './twilio.utils.js';

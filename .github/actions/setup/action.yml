@@ -1,0 +1,41 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-action.json
+name: Setup
+description: Set up Node.js and pnpm with dependency caching, then install dependencies.
+
+inputs:
+  node-version:
+    description: Node.js version to install. Defaults to the version in .node-version.
+    required: false
+    default: ''
+  install:
+    description: Whether to run `pnpm install --frozen-lockfile`.
+    required: false
+    default: 'true'
+
+runs:
+  using: composite
+  steps:
+    # pnpm/action-setup reads the `packageManager` field from package.json, so
+    # CI runs byte-identically to local development and can always parse the
+    # committed lockfile version.
+    - name: Set up pnpm
+      uses: pnpm/action-setup@v6
+
+    - name: Set up Node.js (from .node-version)
+      if: inputs.node-version == ''
+      uses: actions/setup-node@v7
+      with:
+        node-version-file: .node-version
+        cache: pnpm
+
+    - name: Set up Node.js (explicit version)
+      if: inputs.node-version != ''
+      uses: actions/setup-node@v7
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: pnpm
+
+    - name: Install dependencies
+      if: inputs.install == 'true'
+      shell: bash
+      run: pnpm install --frozen-lockfile

@@ -1,0 +1,135 @@
+# yaml-language-server: $schema=https://storage.googleapis.com/coderabbit_public_assets/schema.v2.json
+# Reference: https://docs.coderabbit.ai/guides/configure-coderabbit
+---
+language: en-US
+tone_instructions: >-
+  Be direct and technical. Lead with the concrete defect or risk and cite the
+  exact symbol, file and line. Skip praise, restatement and filler. If a change
+  is correct, say nothing about it.
+
+early_access: false
+enable_free_tier: true
+
+reviews:
+  # `chill` comments only on findings with real signal. `assertive` is noisier
+  # and tends to bikeshed on a library this small.
+  profile: chill
+
+  # A human owns the approve/reject decision; the bot must never gate a merge.
+  request_changes_workflow: false
+
+  high_level_summary: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: false
+  changed_files_summary: true
+  sequence_diagrams: false
+
+  assess_linked_issues: true
+  related_issues: true
+  related_prs: true
+  suggested_labels: true
+  suggested_reviewers: true
+  auto_assign_reviewers: false
+
+  auto_review:
+    enabled: true
+    auto_incremental_review: true
+    # Drafts are work in progress; reviewing them burns quota and adds noise.
+    drafts: false
+    # Regex, matched against the target branch. `.*` covers every base, so
+    # stacked pull requests that target another feature branch — not just
+    # master — are reviewed too.
+    base_branches:
+      - '.*'
+
+  # Generated, vendored and lock artifacts carry no reviewable intent.
+  path_filters:
+    - '!pnpm-lock.yaml'
+    - '!dist/**'
+    - '!coverage/**'
+    - '!CHANGELOG.md'
+
+  path_instructions:
+    - path: 'lib/**/*.ts'
+      instructions: >-
+        This is a published NestJS library: every exported symbol is a public
+        API contract. Flag (1) any non-additive change to an exported
+        signature, type or barrel export, since it forces a semver-major;
+        (2) `any`, non-null assertions and unchecked casts — this repo requires
+        `unknown` plus explicit narrowing; (3) an exported symbol whose JSDoc
+        is missing, stale, or lacks an `@example`; (4) DI wiring that builds
+        provider tokens by hand instead of using `getTwilioClientToken()`;
+        (5) runtime imports from `twilio/lib/**` — only the package root is a
+        stable entry point, deep paths are acceptable for types only.
+
+    - path: 'lib/webhook/**'
+      instructions: >-
+        Signature validation is security-critical. Verify the request URL is
+        reconstructed exactly as Twilio signed it, honouring `X-Forwarded-Proto`
+        and `X-Forwarded-Host` when behind a proxy. Verify JSON bodies use
+        `validateRequestWithBody` together with the `bodySHA256` query
+        parameter rather than `validateRequest`. Reject any non-constant-time
+        comparison, and flag any hardcoded or fixture signature that can reach
+        runtime code.
+
+    - path: 'lib/__tests__/**'
+      instructions: >-
+        Tests must assert observable behaviour, not implementation detail. Flag
+        any test that would still pass with the feature deleted, any assertion
+        against source text, and any test performing a live Twilio API call —
+        live calls belong behind the manually dispatched integration workflow.
+
+    - path: '.github/**'
+      instructions: >-
+        Flag third-party actions that are unpinned or float across major
+        versions, `permissions` blocks broader than the job needs, any use of
+        `pull_request_target`, and any step interpolating untrusted
+        `github.event` data directly into a `run:` block.
+
+    - path: '{package.json,tsconfig*.json,.node-version}'
+      instructions: >-
+        Flag drift between `engines.node`, `.node-version` and the CI test
+        matrix. Flag any `exports` map change that drops a condition or
+        subpath, and any runtime dependency added to `dependencies` that
+        belongs in `peerDependencies`.
+
+  finishing_touches:
+    docstrings:
+      enabled: true
+    unit_tests:
+      enabled: false
+
+  tools:
+    # oxlint is this repo's linter and already runs in CI. Letting the bot run
+    # ESLint or Biome would surface rules the project deliberately does not use.
+    eslint:
+      enabled: false
+    biome:
+      enabled: false
+    oxlint:
+      enabled: true
+    actionlint:
+      enabled: true
+    yamllint:
+      enabled: true
+    markdownlint:
+      enabled: true
+    gitleaks:
+      enabled: true
+    semgrep:
+      enabled: true
+    shellcheck:
+      enabled: true
+
+chat:
+  auto_reply: true
+
+knowledge_base:
+  opt_out: false
+  learnings:
+    scope: local
+  issues:
+    scope: local
+  pull_requests:
+    scope: local
