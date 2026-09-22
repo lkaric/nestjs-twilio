@@ -72,7 +72,10 @@
     "clean:dist": "rimraf dist",
     "clean:test": "rimraf coverage",
     "prepare": "lefthook install || true",
-    "check:runtime": "node scripts/check-dual-build.mjs"
+    "check:runtime": "node scripts/check-dual-build.mjs",
+    "docs:dev": "pnpm --filter @nestjs-twilio/docs dev",
+    "docs:build": "pnpm --filter @nestjs-twilio/docs build",
+    "docs:preview": "pnpm --filter @nestjs-twilio/docs preview"
   },
   "peerDependencies": {
     "@nestjs/common": "^11.0.0 || ^12.0.0",

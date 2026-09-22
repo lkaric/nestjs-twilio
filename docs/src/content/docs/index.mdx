@@ -1,0 +1,47 @@
+---
+title: nestjs-twilio
+tagline: Injectable Twilio client for NestJS — webhook validation, TwiML responses, error mapping, and multi-account clients.
+template: splash
+hero:
+  tagline: Dependency-injected Twilio SDK client for NestJS, with webhook signature validation, TwiML response serialization, automatic error mapping, and multi-account support.
+  actions:
+    - text: Get Started
+      link: /getting-started/
+      icon: right-arrow
+      variant: primary
+    - text: View on GitHub
+      link: https://github.com/lkaric/nestjs-twilio
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## Why nestjs-twilio?
+
+<CardGrid stagger>
+  <Card title="Dependency Injection" icon="puzzle">
+    Register the Twilio SDK client once with `TwilioModule.forRoot()` and inject it anywhere with
+    `@InjectTwilio()` or the `TwilioService` wrapper.
+  </Card>
+  <Card title="Webhook Signature Validation" icon="approve-check">
+    `TwilioWebhookGuard` and `@TwilioWebhook()` verify the `X-Twilio-Signature` header on inbound
+    requests, including behind proxies and for JSON bodies.
+  </Card>
+  <Card title="TwiML Responses" icon="document">
+    `TwimlInterceptor` serializes `VoiceResponse`, `MessagingResponse`, and `FaxResponse` builders
+    returned from a controller straight to XML.
+  </Card>
+  <Card title="Error Mapping" icon="warning">
+    `TwilioExceptionFilter` maps the Twilio SDK's `RestException` onto a Nest `HttpException`-shaped
+    JSON response, preserving the Twilio error code and `more_info` link.
+  </Card>
+  <Card title="Multi-Account Clients" icon="rocket">
+    Register additional named clients for subaccounts with `TwilioModule.forFeature(name, options)`
+    and inject them with `@InjectTwilio(name)`.
+  </Card>
+  <Card title="TypeScript-First" icon="seti:typescript">
+    Dual ESM/CJS build behind an `exports` map, with full type support and preserved decorator
+    metadata in both builds.
+  </Card>
+</CardGrid>

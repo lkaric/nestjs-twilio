@@ -1,0 +1,68 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: Docs
+
+on:
+  push:
+    branches: [master]
+    # Only rebuild when something the site renders actually changed.
+    paths:
+      - 'docs/**'
+      - 'README.md'
+      - 'MIGRATION.md'
+      - '.github/workflows/docs.yml'
+  pull_request:
+    paths:
+      - 'docs/**'
+      - '.github/workflows/docs.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  # Never cancel a deployment midway; a half-published site is worse than a
+  # slightly stale one.
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build site
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up toolchain
+        uses: ./.github/actions/setup
+
+      - name: Build documentation site
+        run: pnpm docs:build
+
+      # Only meaningful on master, but running it on pull requests too means a
+      # broken site fails review rather than deployment.
+      - name: Configure GitHub Pages
+        if: github.ref == 'refs/heads/master'
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        if: github.ref == 'refs/heads/master'
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: docs/dist
+
+  deploy:
+    name: Deploy to GitHub Pages
+    if: github.ref == 'refs/heads/master'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write # publish to the Pages site
+      id-token: write # the deploy action authenticates over OIDC
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -35,3 +35,6 @@ lerna-debug.log*
 
 # ENV
 .env
+# Astro docs site
+docs/dist/
+docs/.astro/
