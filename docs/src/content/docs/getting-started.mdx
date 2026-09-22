@@ -25,11 +25,29 @@ service that sends SMS through your Twilio account.
 1. Install the package. As of v5, `twilio` is a peer dependency and is not
    installed for you, so install it alongside `nestjs-twilio`:
 
-   <Tabs>
-     <TabItem label="npm">```bash npm install nestjs-twilio twilio ```</TabItem>
-     <TabItem label="pnpm">```bash pnpm add nestjs-twilio twilio ```</TabItem>
-     <TabItem label="yarn">```bash yarn add nestjs-twilio twilio ```</TabItem>
-   </Tabs>
+   <Tabs syncKey="pkg">
+  <TabItem label="npm">
+
+   ```bash
+   npm install nestjs-twilio twilio
+   ```
+
+     </TabItem>
+  <TabItem label="pnpm">
+
+   ```bash
+   pnpm add nestjs-twilio twilio
+   ```
+
+     </TabItem>
+  <TabItem label="yarn">
+
+   ```bash
+   yarn add nestjs-twilio twilio
+   ```
+
+     </TabItem>
+</Tabs>
 
 2. Register `TwilioModule` in your root module and call `forRoot()` with
    your Account SID and Auth Token:
@@ -108,7 +126,7 @@ service that sends SMS through your Twilio account.
    Check the destination phone: the text arrives within a few seconds, and
    the terminal prints the message SID that Twilio assigned to it.
 
-   </Steps>
+</Steps>
 
 ## Next steps
 
