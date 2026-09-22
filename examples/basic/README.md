@@ -35,6 +35,8 @@ Twilio account — only the endpoints that actually call the API need real ones.
 | `POST /webhooks/sms`     | Signature validation plus a TwiML reply                                                                              |
 | `POST /webhooks/voice`   | Same, with the response content type overridden per route                                                            |
 | `POST /webhooks/billing` | Validation against a subaccount's auth token                                                                         |
+| `GET /token/voice`       | Minting a Voice access token from an API-key-authenticated named client                                              |
+| `GET /token/video`       | Same, scoped to a Video room                                                                                         |
 | `GET /health`            | Terminus health check probing both clients, imported from the `nestjs-twilio/terminus` subpath                       |
 
 ## Trying the webhook routes

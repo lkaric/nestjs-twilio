@@ -247,8 +247,43 @@ jobs:
             }
           "
           echo "health check correctly reported 503 with both clients down"
+
+          # Access tokens are signed with an API key. The `realtime` client is
+          # registered with one beneath an auth-token root, so this also proves
+          # the inherited auth token does not outrank the explicit API key —
+          # the defect the example app surfaced.
+          curl -s -o /tmp/token.json 'http://localhost:3000/token/voice?identity=alice'
+          node -e "
+            const { token } = require('/tmp/token.json');
+            if (!token) {
+              console.error('::error::no token minted');
+              process.exit(1);
+            }
+            const claims = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+            if (claims.iss !== process.env.TWILIO_API_KEY) {
+              console.error('::error::token issuer is ' + claims.iss + ', expected the API key SID');
+              process.exit(1);
+            }
+            if (claims.grants?.identity !== 'alice') {
+              console.error('::error::token identity is ' + claims.grants?.identity);
+              process.exit(1);
+            }
+          "
+          echo "voice token correctly signed by the API key client"
+
+          # Voice rejects identities outside [A-Za-z0-9_], and fails at
+          # connection time in the browser rather than at mint time.
+          status=$(curl -s -o /dev/null -w '%{http_code}' \
+            'http://localhost:3000/token/voice?identity=alice@example.com')
+          if [ "$status" != "400" ]; then
+            echo "::error::invalid voice identity returned $status, expected 400"
+            exit 1
+          fi
+          echo "invalid voice identity correctly rejected with 400"
         env:
           TWILIO_ACCOUNT_SID: ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+          TWILIO_API_KEY: SKxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+          TWILIO_API_SECRET: ci_test_api_key_secret
           TWILIO_AUTH_TOKEN: ci_test_auth_token
           TWILIO_BILLING_ACCOUNT_SID: ACyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
           TWILIO_BILLING_AUTH_TOKEN: ci_billing_auth_token

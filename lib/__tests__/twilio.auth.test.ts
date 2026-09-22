@@ -1,6 +1,10 @@
 import { BadRequestException } from '@nestjs/common';
 
-import { createTwilioClient, validateTwilioOptions } from '../utils/twilio.utils.js';
+import {
+  createTwilioClient,
+  mergeClientOptions,
+  validateTwilioOptions,
+} from '../utils/twilio.utils.js';
 
 type Options = Parameters<typeof createTwilioClient>[0];
 
@@ -123,5 +127,75 @@ describe('credential validation', () => {
 
     expect(message).toBeDefined();
     expect(message).not.toContain(secret);
+  });
+});
+
+// `authToken` and `apiKey`/`apiSecret` are alternative authentication modes,
+// not independent settings. Merging them field-by-field lets an inherited
+// value outrank an explicitly configured one — which made it impossible to
+// register an API-key client beneath an auth-token root. The example app
+// caught this; these assertions keep it caught.
+describe('credential inheritance', () => {
+  const root = { accountSid: ACCOUNT_SID, authToken: 'root_token', region: 'ie1' };
+
+  it('drops an inherited authToken when the client supplies an API key', () => {
+    const merged = mergeClientOptions(root, {
+      name: 'realtime',
+      apiKey: API_KEY,
+      apiSecret: 'secret',
+    });
+
+    expect(merged.apiKey).toBe(API_KEY);
+    expect(merged).not.toHaveProperty('authToken');
+  });
+
+  it('drops inherited API key credentials when the client supplies an auth token', () => {
+    const keyRoot = { accountSid: ACCOUNT_SID, apiKey: API_KEY, apiSecret: 'secret' };
+
+    const merged = mergeClientOptions(keyRoot, { name: 'billing', authToken: 'own_token' });
+
+    expect(merged.authToken).toBe('own_token');
+    expect(merged).not.toHaveProperty('apiKey');
+    expect(merged).not.toHaveProperty('apiSecret');
+  });
+
+  // The credential rule must not widen into transport settings, which are
+  // independent and must keep inheriting.
+  it('still inherits transport settings across an auth mode change', () => {
+    const merged = mergeClientOptions(root, {
+      name: 'realtime',
+      apiKey: API_KEY,
+      apiSecret: 'secret',
+    });
+
+    expect(merged.region).toBe('ie1');
+    expect(merged.accountSid).toBe(ACCOUNT_SID);
+  });
+
+  it('inherits credentials when the client supplies none of its own', () => {
+    const merged = mergeClientOptions(root, { name: 'same-account' });
+
+    expect(merged.authToken).toBe('root_token');
+  });
+
+  // A key present but undefined means "unset in the environment", which
+  // inherits. It must not be mistaken for an auth mode the client chose.
+  it('treats an undefined credential as absent, not as a mode selection', () => {
+    const merged = mergeClientOptions(root, { name: 'billing', apiKey: undefined });
+
+    expect(merged.authToken).toBe('root_token');
+  });
+
+  it('builds a working key-authed client beneath an auth-token root', () => {
+    const client = createTwilioClient(
+      mergeClientOptions(root, {
+        name: 'realtime',
+        apiKey: API_KEY,
+        apiSecret: 'the_secret',
+      }) as Options
+    );
+
+    expect(client.username).toBe(API_KEY);
+    expect(client.password).toBe('the_secret');
   });
 });

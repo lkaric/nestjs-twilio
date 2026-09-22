@@ -7,6 +7,7 @@ import { BillingService } from './billing.service.js';
 import { HealthController } from './health.controller.js';
 import { SmsController } from './sms.controller.js';
 import { SmsService } from './sms.service.js';
+import { TokenController } from './token.controller.js';
 import { WebhookController } from './webhook.controller.js';
 
 @Module({
@@ -35,8 +36,18 @@ import { WebhookController } from './webhook.controller.js';
       accountSid: process.env.TWILIO_BILLING_ACCOUNT_SID ?? 'ACyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy',
       authToken: process.env.TWILIO_BILLING_AUTH_TOKEN ?? 'example_billing_token',
     }),
+
+    // A client authenticated with an API key rather than an auth token. Access
+    // Tokens are signed with API keys, so this is what the /token routes mint
+    // against — Twilio does not accept auth-token-signed access tokens.
+    TwilioModule.registerClient({
+      name: 'realtime',
+      accountSid: process.env.TWILIO_ACCOUNT_SID ?? 'ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+      apiKey: process.env.TWILIO_API_KEY ?? 'SKxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+      apiSecret: process.env.TWILIO_API_SECRET ?? 'example_api_key_secret',
+    }),
   ],
-  controllers: [SmsController, WebhookController, HealthController],
+  controllers: [SmsController, WebhookController, HealthController, TokenController],
   providers: [SmsService, BillingService, TwilioHealthIndicator],
 })
 export class AppModule {}

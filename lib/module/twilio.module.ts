@@ -7,6 +7,7 @@ import {
 import { createTwilioClient, getTwilioClientToken, mergeClientOptions } from '../utils/index.js';
 import { TWILIO_WEBHOOK_OPTIONS } from '../webhook/twilio-webhook.options.js';
 import { TwilioService } from './twilio.service.js';
+import { TwilioTokenService } from '../token/twilio-token.service.js';
 
 import type { DynamicModule, ModuleMetadata, Provider, Type } from '@nestjs/common';
 import type { ASYNC_OPTIONS_TYPE, OPTIONS_TYPE } from '../utils/twilio.module-definition.js';
@@ -145,8 +146,9 @@ function createClientProvider(
       }),
       inject: [MODULE_OPTIONS_TOKEN],
     },
+    TwilioTokenService,
   ],
-  exports: [TwilioService, getTwilioClientToken(), TWILIO_WEBHOOK_OPTIONS],
+  exports: [TwilioService, getTwilioClientToken(), TWILIO_WEBHOOK_OPTIONS, TwilioTokenService],
 })
 export class TwilioModule extends ConfigurableModuleClass {
   /**

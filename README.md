@@ -255,3 +255,25 @@ Setup, conventions, commit format and the checks CI runs are documented in
 ## License
 
 MIT © [Lazar Karic](https://lazar.sh)
+
+## Access tokens
+
+Mint short-lived tokens so browsers and mobile apps can use Twilio's
+client-side SDKs without holding your credentials:
+
+```ts
+import { TwilioTokenService } from 'nestjs-twilio';
+
+@Controller('token')
+export class TokenController {
+  constructor(private readonly tokens: TwilioTokenService) {}
+
+  @Get('voice')
+  voice(@Query('identity') identity: string) {
+    return { token: this.tokens.createVoiceToken({ identity, incomingAllow: true }) };
+  }
+}
+```
+
+Tokens are signed with an API key, so register the client with `apiKey` and
+`apiSecret`. See the [Access Tokens guide](https://nestjs-twilio.lazar.sh/features/access-tokens/).

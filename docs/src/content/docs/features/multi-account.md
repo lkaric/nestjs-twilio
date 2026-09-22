@@ -95,6 +95,28 @@ TwilioModule.registerClient({
 TwilioModule.registerClient({ name: 'au', accountSid, authToken, region: 'au1' });
 ```
 
+### Credentials inherit as a unit
+
+`authToken` and `apiKey` / `apiSecret` are alternative **authentication
+modes**, not independent settings, so they are inherited together. A client
+that supplies either mode drops the inherited other one:
+
+```ts
+TwilioModule.forRoot({ accountSid, authToken });
+
+// Authenticates with the API key. The root's authToken is dropped, not
+// merged alongside it.
+TwilioModule.registerClient({ name: 'realtime', apiKey, apiSecret });
+```
+
+Merging them field-by-field would let the inherited `authToken` outrank the
+explicitly configured `apiKey`, making it impossible to register an API-key
+client — the kind [Access Tokens](/features/access-tokens/) require — beneath
+an auth-token root.
+
+Everything that is not a credential, including `region` and `edge`, keeps
+inheriting across a mode change.
+
 ## Asynchronous registration
 
 `registerClientAsync()` accepts the same shape as Nest's own generated `*Async`

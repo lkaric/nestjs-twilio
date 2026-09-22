@@ -44,6 +44,9 @@ importers:
       '@swc/core':
         specifier: ^1.16.2
         version: 1.16.2
+      '@types/jsonwebtoken':
+        specifier: ^9.0.10
+        version: 9.0.10
       '@types/node':
         specifier: ^24.10.1
         version: 24.13.6
@@ -53,6 +56,9 @@ importers:
       dotenv:
         specifier: ^17.2.4
         version: 17.4.2
+      jsonwebtoken:
+        specifier: ^9.0.3
+        version: 9.0.3
       lefthook:
         specifier: ^2.1.14
         version: 2.1.14
@@ -1530,6 +1536,9 @@ packages:
 
   '@types/js-yaml@4.0.9':
     resolution: {integrity: sha512-k4MGaQl5TGo/iipqb2UDG2UwjXziSWkh0uysQelTlJpX1qGlpUZYm8PnO4DxG1qBomtJUdYJ6qR6xdIah10JLg==}
+
+  '@types/jsonwebtoken@9.0.10':
+    resolution: {integrity: sha512-asx5hIG9Qmf/1oStypjanR7iKTv0gXQ1Ov/jfrX6kS/EO0OFni8orbmGCn0672NHR3kXHwpAwR+B368ZGN/2rA==}
 
   '@types/mdast@4.0.4':
     resolution: {integrity: sha512-kGaNbPh1k7AFzgpud/gMdvIm5xuECykRR+JnWKQno9TAXVa6WIVCGTPvYGekIDL4uwCZQSYbUxNBSb1aUo79oA==}
@@ -5612,6 +5621,11 @@ snapshots:
       '@types/unist': 3.0.3
 
   '@types/js-yaml@4.0.9': {}
+
+  '@types/jsonwebtoken@9.0.10':
+    dependencies:
+      '@types/ms': 2.1.0
+      '@types/node': 24.13.6
 
   '@types/mdast@4.0.4':
     dependencies:

@@ -105,6 +105,7 @@ export default defineConfig({
             { label: 'Error Handling', slug: 'features/error-handling' },
             { label: 'Multi-Account Clients', slug: 'features/multi-account' },
             { label: 'Health Checks', slug: 'features/health-checks' },
+            { label: 'Access Tokens', slug: 'features/access-tokens' },
           ],
         },
         {

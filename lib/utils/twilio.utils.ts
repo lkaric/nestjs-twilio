@@ -65,6 +65,12 @@ export function validateTwilioOptions(options: typeof OPTIONS_TYPE): void {
   }
 }
 
+/** Auth-token credential fields, which are an alternative to the API key pair. */
+const AUTH_TOKEN_FIELDS = ['authToken'] as const;
+
+/** API key credential fields, which are an alternative to the auth token. */
+const API_KEY_FIELDS = ['apiKey', 'apiSecret'] as const;
+
 /**
  * Merge a named client's overrides onto the shared options from `forRoot()`.
  *
@@ -79,10 +85,17 @@ export function validateTwilioOptions(options: typeof OPTIONS_TYPE): void {
  * `region` and `edge` are named values, so returning one client to the default
  * is expressed by naming it (`region: 'us1'`) rather than by erasing it.
  *
+ * Credentials are the exception: `authToken` and `apiKey`/`apiSecret` are
+ * alternative *authentication modes*, not independent settings, so they are
+ * inherited as a unit. A client that supplies either mode drops the inherited
+ * other one. Merging them field-by-field means an inherited `authToken` wins
+ * over an explicitly configured `apiKey` — making it impossible to register an
+ * API-key client beneath an auth-token root.
+ *
  * @param shared - Options from `forRoot()`, or undefined when none is registered.
  * @param overrides - The named client's own options.
  *
- * @example
+ * @example Transport settings inherit
  * ```ts
  * mergeClientOptions(
  *   { accountSid: 'ACroot', authToken: 'r', region: 'ie1' },
@@ -90,12 +103,40 @@ export function validateTwilioOptions(options: typeof OPTIONS_TYPE): void {
  * );
  * // => { accountSid: 'ACbilling', authToken: 'b', region: 'ie1' }
  * ```
+ *
+ * @example Credentials do not mix modes
+ * ```ts
+ * mergeClientOptions(
+ *   { accountSid: 'ACroot', authToken: 'r', region: 'ie1' },
+ *   { name: 'realtime', apiKey: 'SKxxx', apiSecret: 's' },
+ * );
+ * // => { accountSid: 'ACroot', apiKey: 'SKxxx', apiSecret: 's', region: 'ie1' }
+ * //    the inherited authToken is dropped, not preferred over the API key
+ * ```
  */
 export function mergeClientOptions<S extends object, O extends object>(
   shared: S | undefined,
   overrides: O
 ): S & O {
   const merged: Record<string, unknown> = { ...(shared ?? {}) };
+  const supplied = new Set(
+    Object.entries(overrides)
+      .filter(([, value]) => value !== undefined)
+      .map(([key]) => key)
+  );
+
+  const replacesAuthMode = (fields: readonly string[]): boolean =>
+    fields.some((field) => supplied.has(field));
+
+  // Drop the inherited credentials of whichever mode this client is not using,
+  // so an inherited value cannot outrank an explicitly configured one.
+  if (replacesAuthMode(API_KEY_FIELDS)) {
+    for (const field of AUTH_TOKEN_FIELDS) delete merged[field];
+  }
+
+  if (replacesAuthMode(AUTH_TOKEN_FIELDS)) {
+    for (const field of API_KEY_FIELDS) delete merged[field];
+  }
 
   for (const [key, value] of Object.entries(overrides)) {
     if (key === 'name') continue;
