@@ -38,17 +38,30 @@ export function validateTwilioOptions(options: typeof OPTIONS_TYPE): void {
     throw new BadRequestException('TwilioModule: accountSid is required and must be a string');
   }
 
-  // Must have either authToken or apiKey (apiSecret optional for some flows)
-  const hasAuthToken = options.authToken && typeof options.authToken === 'string';
-  const hasApiKey = options.apiKey && typeof options.apiKey === 'string';
-
-  if (!hasAuthToken && !hasApiKey) {
-    throw new BadRequestException('TwilioModule: either authToken or apiKey is required');
-  }
-
-  // Sanity check on Account SID format
   if (!options.accountSid.startsWith('AC')) {
     throw new BadRequestException('TwilioModule: accountSid should start with "AC"');
+  }
+
+  const hasAuthToken = Boolean(options.authToken) && typeof options.authToken === 'string';
+  const hasApiKey = Boolean(options.apiKey) && typeof options.apiKey === 'string';
+
+  if (!hasAuthToken && !hasApiKey) {
+    throw new BadRequestException(
+      'TwilioModule: either authToken, or apiKey together with apiSecret, is required'
+    );
+  }
+
+  if (hasApiKey) {
+    // API key authentication signs with the key's secret. Treating the secret
+    // as optional is what let it be dropped silently, producing a client that
+    // failed every request.
+    if (!options.apiSecret || typeof options.apiSecret !== 'string') {
+      throw new BadRequestException('TwilioModule: apiSecret is required when apiKey is provided');
+    }
+
+    if (!options.apiKey?.startsWith('SK')) {
+      throw new BadRequestException('TwilioModule: apiKey should start with "SK"');
+    }
   }
 }
 
@@ -95,32 +108,37 @@ export function mergeClientOptions<S extends object, O extends object>(
 /**
  * Build a Twilio SDK client from module options.
  *
- * Credentials are passed to the constructor; module-level keys that the SDK
- * does not understand are stripped, and everything else is forwarded as
- * `ClientOpts`.
+ * The SDK constructor is `new Twilio(username, password, opts)`. Which values
+ * those are depends on the authentication mode:
+ *
+ * - **Auth token**: username is the Account SID, password the auth token.
+ * - **API key**: username is the API Key SID (`SK…`), password is the key's
+ *   secret, and the Account SID is supplied through `opts.accountSid`.
+ *
+ * Module-level keys the SDK has no concept of are stripped; everything else is
+ * forwarded as `ClientOpts`.
  *
  * @throws BadRequestException When required credentials are missing or malformed.
  *
- * @example
+ * @example Auth token
  * ```ts
- * const client = createTwilioClient({
- *   accountSid: 'ACxxxxxxx',
- *   authToken: 'auth_token_here',
- *   region: 'ie1',
- * });
+ * createTwilioClient({ accountSid: 'ACxxx', authToken: 'token', region: 'ie1' });
+ * ```
+ *
+ * @example API key, which is also what access tokens are signed with
+ * ```ts
+ * createTwilioClient({ accountSid: 'ACxxx', apiKey: 'SKxxx', apiSecret: 'secret' });
  * ```
  */
 export function createTwilioClient(options: typeof OPTIONS_TYPE): TwilioClient {
   validateTwilioOptions(options);
 
-  const credential = options.authToken || options.apiKey || '';
-
   const {
     accountSid,
-    // Credentials go to the constructor, not into ClientOpts.
-    authToken: _authToken,
-    apiKey: _apiKey,
-    apiSecret: _apiSecret,
+    // Credentials are constructor arguments, never ClientOpts.
+    authToken,
+    apiKey,
+    apiSecret,
     // Module-level settings the Twilio SDK has no concept of. Without this
     // they were forwarded into ClientOpts and reached the SDK constructor.
     webhookAuthToken: _webhookAuthToken,
@@ -128,7 +146,14 @@ export function createTwilioClient(options: typeof OPTIONS_TYPE): TwilioClient {
     ...clientOpts
   } = options;
 
-  return new twilio.Twilio(accountSid, credential, clientOpts);
+  // Prefer the auth token when both are supplied, matching the precedence the
+  // Twilio CLI and the SDK's own environment-variable handling use.
+  if (authToken) {
+    return new twilio.Twilio(accountSid, authToken, { ...clientOpts, accountSid });
+  }
+
+  // validateTwilioOptions has already established both are present.
+  return new twilio.Twilio(apiKey, apiSecret, { ...clientOpts, accountSid });
 }
 
 /**

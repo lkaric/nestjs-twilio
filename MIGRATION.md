@@ -147,6 +147,27 @@ its own module, and a non-global root would be invisible to it.
 
 ---
 
+## 9. API key authentication now works
+
+v4 and early v5 builds accepted `apiKey` but never passed `apiSecret` to the
+SDK, and sent the account SID where Twilio expects the key SID. A client
+configured that way authenticated against nothing and failed every request.
+
+If you configured `apiKey` without `apiSecret`, the module now rejects it at
+startup rather than producing a broken client:
+
+```diff
+  TwilioModule.forRoot({
+    accountSid: process.env.TWILIO_ACCOUNT_SID,
+    apiKey: process.env.TWILIO_API_KEY,
++   apiSecret: process.env.TWILIO_API_SECRET,
+  })
+```
+
+Auth-token configuration is unaffected.
+
+---
+
 ## What did _not_ change
 
 - `TwilioModule.forRoot()` and `TwilioModule.forRootAsync()` keep their names

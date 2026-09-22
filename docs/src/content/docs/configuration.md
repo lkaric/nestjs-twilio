@@ -41,7 +41,39 @@ a `BadRequestException` — never including the credential value itself — if:
 
 - `accountSid` is missing or not a string
 - `accountSid` doesn't start with `"AC"`
-- neither `authToken` nor `apiKey` is provided
+- neither `authToken`, nor `apiKey` together with `apiSecret`, is provided
+- `apiKey` is given without `apiSecret`
+- `apiKey` doesn't start with `"SK"`
+
+## Authenticating with an API key
+
+Twilio treats API keys as the preferred way to authenticate REST requests, and
+they are also what [Access Tokens](https://www.twilio.com/docs/iam/access-tokens)
+are signed with. Supply `apiKey` and `apiSecret` instead of `authToken`:
+
+```ts
+TwilioModule.forRoot({
+  accountSid: process.env.TWILIO_ACCOUNT_SID,
+  apiKey: process.env.TWILIO_API_KEY, // SK…
+  apiSecret: process.env.TWILIO_API_SECRET,
+});
+```
+
+`apiSecret` is mandatory whenever `apiKey` is set — the secret is what signs
+the request, so a key without it cannot authenticate anything.
+
+If both an `authToken` and an API key are supplied, the auth token wins,
+matching the precedence used by the Twilio CLI and the SDK's own
+environment-variable handling.
+
+:::note[Key types]
+Twilio API keys come in three types. **Main** and **Standard** keys work for
+both REST requests and Access Tokens. **Restricted** keys authenticate REST
+requests but [cannot mint Access Tokens](https://www.twilio.com/docs/iam/access-tokens#step-2-api-key).
+
+All three share the `SK` prefix, so the restriction can only surface as an
+error from Twilio at token-creation time.
+:::
 
 ## Asynchronous registration
 
