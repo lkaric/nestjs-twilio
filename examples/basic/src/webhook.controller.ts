@@ -1,19 +1,12 @@
 import { Body, Controller, Post, UseInterceptors } from '@nestjs/common';
-import { TwilioWebhook, TwimlInterceptor, TwimlResponseType } from 'nestjs-twilio';
+import {
+  TwilioWebhook,
+  TwimlInterceptor,
+  TwimlResponseType,
+  type TwilioIncomingCallPayload,
+  type TwilioIncomingMessagePayload,
+} from 'nestjs-twilio';
 import twilio from 'twilio';
-
-/**
- * The subset of Twilio's inbound-SMS callback this example reads.
- *
- * Typed payload interfaces for the full set of callbacks are tracked in #85;
- * until then, declare what you use.
- */
-interface InboundSmsPayload {
-  From: string;
-  To: string;
-  Body: string;
-  MessageSid: string;
-}
 
 @Controller('webhooks')
 export class WebhookController {
@@ -27,7 +20,7 @@ export class WebhookController {
   @Post('sms')
   @TwilioWebhook()
   @UseInterceptors(TwimlInterceptor)
-  replyToSms(@Body() payload: InboundSmsPayload) {
+  replyToSms(@Body() payload: TwilioIncomingMessagePayload) {
     const response = new twilio.twiml.MessagingResponse();
     response.message(`Received "${payload.Body}" from ${payload.From}`);
 
@@ -42,9 +35,9 @@ export class WebhookController {
   @TwilioWebhook()
   @UseInterceptors(TwimlInterceptor)
   @TwimlResponseType('application/xml')
-  answerCall() {
+  answerCall(@Body() payload: TwilioIncomingCallPayload) {
     const response = new twilio.twiml.VoiceResponse();
-    response.say('Thanks for calling. This response came from nestjs-twilio.');
+    response.say(`Thanks for calling from ${payload.FromCity ?? 'an unknown city'}.`);
 
     return response;
   }

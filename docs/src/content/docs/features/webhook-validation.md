@@ -133,6 +133,61 @@ health() {
 Useful for local development or intentionally public endpoints under a
 controller that otherwise requires validation.
 
+## Typed request bodies
+
+Interfaces for the bodies Twilio posts are exported from the package root, so
+handlers can be typed without hand-declaring the shape.
+
+```ts
+import {
+  TwilioWebhook,
+  TwimlInterceptor,
+  type TwilioIncomingMessagePayload,
+} from 'nestjs-twilio';
+
+@Post('webhooks/sms')
+@TwilioWebhook()
+@UseInterceptors(TwimlInterceptor)
+handleSms(@Body() payload: TwilioIncomingMessagePayload) {
+  const reply = new twilio.twiml.MessagingResponse();
+  reply.message(`Thanks, ${payload.ProfileName ?? payload.From}`);
+  return reply;
+}
+```
+
+| Type                           | Body it describes                                             |
+| ------------------------------ | ------------------------------------------------------------- |
+| `TwilioIncomingMessagePayload` | An inbound SMS, MMS, RCS or WhatsApp message                  |
+| `TwilioMessageStatusPayload`   | A message `StatusCallback` as an outbound message progresses  |
+| `TwilioIncomingCallPayload`    | An inbound voice call, and any TwiML `action` callback        |
+| `TwilioCallStatusPayload`      | A call `StatusCallback`, adding duration and recording fields |
+
+Supporting unions — `TwilioMessageStatus`, `TwilioCallStatus` and
+`TwilioCallDirection` — constrain the status fields to the values Twilio
+documents, so a typo in a comparison is a compile error.
+
+:::caution[Every value is a string]
+Twilio posts `application/x-www-form-urlencoded`, so **numbers and booleans
+arrive as strings**: `NumMedia` is `'2'`, not `2`, and `Forwarded` is
+`'true'`. These interfaces model that faithfully rather than pretending
+otherwise. Convert at the point of use.
+
+```ts
+const count = Number(payload.NumMedia ?? 0);
+
+for (let index = 0; index < count; index += 1) {
+  const url = payload[`MediaUrl${index}`];
+  const contentType = payload[`MediaContentType${index}`];
+}
+```
+
+:::
+
+Twilio states that it may add parameters without notice, so treat these as the
+documented subset rather than an exhaustive list. Signature validation covers
+the entire body whatever it contains, so a new parameter never breaks
+verification.
+
 ## Reference
 
 ### `TwilioWebhookOptions`
