@@ -151,7 +151,7 @@ export function isTwimlResponse(value: unknown): value is TwimlResponse {
  * it only relies on the `response.header()` method both implement, and it
  * never touches the response status code or any other header.
  *
- * @example Registered globally, using the default `text/xml` content type
+ * @example Registered globally, using the default content type
  * ```ts
  * app.useGlobalInterceptors(new TwimlInterceptor());
  * ```
@@ -167,7 +167,7 @@ export function isTwimlResponse(value: unknown): value is TwimlResponse {
  * }
  * ```
  *
- * @example Registered as a provider, with a per-route override via {@link TwimlResponseType}
+ * @example Registered as a provider, with a per-route override
  * ```ts
  * providers: [{ provide: APP_INTERCEPTOR, useClass: TwimlInterceptor }];
  * ```

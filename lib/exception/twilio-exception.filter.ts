@@ -131,7 +131,7 @@ function toTwilioErrorResponse(exception: RestException): TwilioErrorResponse {
  * }
  * ```
  *
- * @example Global registration via `useGlobalFilters`
+ * @example Global registration via useGlobalFilters
  * ```ts
  * import { HttpAdapterHost } from '@nestjs/core';
  * import { TwilioExceptionFilter } from 'nestjs-twilio';
@@ -142,7 +142,7 @@ function toTwilioErrorResponse(exception: RestException): TwilioErrorResponse {
  * await app.listen(3000);
  * ```
  *
- * @example Global registration via `APP_FILTER` provider
+ * @example Global registration via the APP_FILTER provider
  * ```ts
  * import { APP_FILTER } from '@nestjs/core';
  * import { TwilioExceptionFilter } from 'nestjs-twilio';

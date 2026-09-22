@@ -38,3 +38,5 @@ lerna-debug.log*
 # Astro docs site
 docs/dist/
 docs/.astro/
+# API reference markdown is generated from JSDoc on every build.
+docs/src/content/docs/api/
