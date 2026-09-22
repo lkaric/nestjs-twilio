@@ -1,10 +1,10 @@
 import { ConfigurableModuleBuilder } from '@nestjs/common';
 
-import { ExtraConfiguration, TwilioModuleOptions } from './twilio.interface.js';
+import { TwilioModuleOptions, TwilioModuleDefinitionExtras } from './twilio.interface.js';
 
 export const { ConfigurableModuleClass, MODULE_OPTIONS_TOKEN, OPTIONS_TYPE, ASYNC_OPTIONS_TYPE } =
   new ConfigurableModuleBuilder<TwilioModuleOptions>()
-    .setExtras<ExtraConfiguration>({ isGlobal: false }, (definition, extras) => ({
+    .setExtras<TwilioModuleDefinitionExtras>({ isGlobal: false }, (definition, extras) => ({
       ...definition,
       global: extras.isGlobal,
     }))
