@@ -25,12 +25,36 @@ type TwimlResponse =
  * Metadata key under which {@link TwimlResponseType} stores its per-route
  * `Content-Type` override. Read back by {@link TwimlInterceptor} through a
  * `Reflector`.
+ *
+ * Exported so you can read the same metadata from your own guard or
+ * interceptor rather than duplicating the key as a string literal.
+ *
+ * @example
+ * ```ts
+ * const contentType = reflector.getAllAndOverride<string>(
+ *   TWIML_RESPONSE_TYPE_METADATA,
+ *   [context.getHandler(), context.getClass()],
+ * );
+ * ```
  */
 export const TWIML_RESPONSE_TYPE_METADATA = 'nestjs-twilio:twiml-response-type';
 
 /**
  * The `Content-Type` header {@link TwimlInterceptor} sets when neither a
  * {@link TwimlResponseType} decorator nor a constructor option overrides it.
+ *
+ * Twilio's own documentation uses `text/xml`; `application/xml` is also
+ * accepted, which is why the value is overridable.
+ *
+ * @example
+ * ```ts
+ * // Restore the default explicitly on one route.
+ * @Post('/voice')
+ * @TwimlResponseType(DEFAULT_TWIML_CONTENT_TYPE)
+ * voice() {
+ *   return new VoiceResponse();
+ * }
+ * ```
  */
 export const DEFAULT_TWIML_CONTENT_TYPE = 'text/xml';
 

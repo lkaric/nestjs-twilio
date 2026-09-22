@@ -10,6 +10,18 @@ import type { CustomDecorator } from '@nestjs/common';
  * guard resolves from the incoming request context and, ultimately, from the
  * module-level default supplied via the {@link TWILIO_WEBHOOK_OPTIONS} DI
  * token.
+ *
+ * @example
+ * ```ts
+ * // Validate against a subaccount's token and an explicit public URL, which
+ * // is what you need when the app sits behind a proxy that rewrites Host.
+ * @Post('/webhooks/billing')
+ * @TwilioWebhook({
+ *   authToken: process.env.TWILIO_BILLING_AUTH_TOKEN,
+ *   url: 'https://api.example.com/webhooks/billing',
+ * })
+ * handleBilling() {}
+ * ```
  */
 export interface TwilioWebhookOptions {
   /**

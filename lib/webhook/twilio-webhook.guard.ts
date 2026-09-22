@@ -21,6 +21,22 @@ const TWILIO_SIGNATURE_HEADER = 'x-twilio-signature';
  * `bodySHA256` query parameter): enable it via
  * `NestFactory.create(AppModule, { rawBody: true })`, which makes Nest
  * populate it with the exact bytes received.
+ *
+ * Note this models the **HTTP request** the guard inspects, not the Twilio
+ * payload itself. Typed payload interfaces are tracked in #85.
+ *
+ * @example
+ * ```ts
+ * // Enable rawBody so JSON webhooks can be validated.
+ * const app = await NestFactory.create(AppModule, { rawBody: true });
+ *
+ * // The guard reads the request through this shape on either adapter.
+ * @Post('/webhooks/sms')
+ * @TwilioWebhook()
+ * handleSms(@Req() request: TwilioWebhookRequest) {
+ *   return request.body;
+ * }
+ * ```
  */
 export interface TwilioWebhookRequest {
   protocol?: string;

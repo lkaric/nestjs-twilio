@@ -1,5 +1,25 @@
 import type { Twilio, ClientOpts } from 'twilio';
 
+/**
+ * The Twilio SDK client instance this module provides.
+ *
+ * An alias for the SDK's `Twilio` type, re-exported so consumers can annotate
+ * injected clients without importing from `twilio` directly.
+ *
+ * @example
+ * ```ts
+ * import { InjectTwilio, type TwilioClient } from 'nestjs-twilio';
+ *
+ * @Injectable()
+ * export class SmsService {
+ *   constructor(@InjectTwilio() private readonly client: TwilioClient) {}
+ *
+ *   send(to: string, body: string) {
+ *     return this.client.messages.create({ to, body, from: '+1234567890' });
+ *   }
+ * }
+ * ```
+ */
 export type TwilioClient = Twilio;
 
 /**
@@ -38,8 +58,22 @@ export interface TwilioClientOpts extends ClientOpts {
 }
 
 /**
- * Extra configuration applied to the module definition (not injected).
- * Separate from options to avoid leaking module-level config into providers.
+ * Module-level configuration applied to the generated `DynamicModule`, rather
+ * than injected into providers.
+ *
+ * `ConfigurableModuleBuilder` merges these keys into the single object passed
+ * to `forRoot()`, but keeps them out of the options object your providers
+ * receive — so module wiring never leaks into application code.
+ *
+ * @example
+ * ```ts
+ * // `isGlobal` configures the module; accountSid and authToken configure the client.
+ * TwilioModule.forRoot({
+ *   accountSid: process.env.TWILIO_ACCOUNT_SID!,
+ *   authToken: process.env.TWILIO_AUTH_TOKEN!,
+ *   isGlobal: true,
+ * });
+ * ```
  */
 export interface TwilioModuleDefinitionExtras {
   /**
@@ -50,11 +84,23 @@ export interface TwilioModuleDefinitionExtras {
 }
 
 /**
- * Module options for synchronous and asynchronous registration.
- * These are the options passed to `forRoot()` and `forRootAsync()`.
+ * Options accepted by `forRoot()` and `forRootAsync()`.
  *
- * Global availability is controlled via extras in `.forRoot({ isGlobal: true })`,
- * not via this options interface.
+ * Extends {@link TwilioClientOpts}, so every Twilio SDK client option is a
+ * top-level key. In v4 these were nested under `options`; see MIGRATION.md.
+ *
+ * @example
+ * ```ts
+ * const options: TwilioModuleOptions = {
+ *   accountSid: process.env.TWILIO_ACCOUNT_SID!,
+ *   authToken: process.env.TWILIO_AUTH_TOKEN!,
+ *   // Any twilio ClientOpts key, flat:
+ *   region: 'ie1',
+ *   edge: 'dublin',
+ *   // Webhook validation defaults, overridable per route:
+ *   webhookUrl: 'https://api.example.com',
+ * };
+ * ```
  */
 export interface TwilioModuleOptions extends TwilioClientOpts {
   /**
