@@ -50,6 +50,13 @@ jobs:
   test:
     name: Test (Node ${{ matrix.node-version }})
     runs-on: ubuntu-latest
+    # id-token:write is scoped to this job only, since it is the sole step
+    # that authenticates to Codecov over OIDC; contents:read is repeated here
+    # because a job-level permissions block replaces the workflow default
+    # rather than adding to it.
+    permissions:
+      contents: read
+      id-token: write
     strategy:
       fail-fast: false
       matrix:
@@ -67,7 +74,17 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Run unit tests
-        run: pnpm test
+        run: pnpm test:coverage
+
+      # Coverage is identical across matrix legs, so upload from only one leg;
+      # otherwise Codecov records two reports for the same commit. Node 24 is
+      # picked as the non-legacy leg.
+      - name: Upload coverage to Codecov
+        if: matrix.node-version == '24'
+        uses: codecov/codecov-action@v5
+        with:
+          use_oidc: true
+          fail_ci_if_error: true
 
   # `engines.node` advertises >=20.19, which no runner in this toolchain can
   # execute on. Prove the claim directly instead: build with the toolchain,
@@ -122,9 +139,9 @@ jobs:
       - name: Assert decorator metadata is preserved
         run: |
           grep -q 'design:paramtypes' dist/cjs/module/twilio.service.js \
-            || { echo "::error::CJS build lost emitDecoratorMetadata — Nest DI will break"; exit 1; }
+            || { echo "::error::CJS build lost emitDecoratorMetadata, Nest DI will break"; exit 1; }
           grep -q 'design:paramtypes' dist/esm/module/twilio.service.js \
-            || { echo "::error::ESM build lost emitDecoratorMetadata — Nest DI will break"; exit 1; }
+            || { echo "::error::ESM build lost emitDecoratorMetadata, Nest DI will break"; exit 1; }
 
       - name: Upload build output
         uses: actions/upload-artifact@v7
@@ -250,7 +267,7 @@ jobs:
 
           # Access tokens are signed with an API key. The `realtime` client is
           # registered with one beneath an auth-token root, so this also proves
-          # the inherited auth token does not outrank the explicit API key —
+          # the inherited auth token does not outrank the explicit API key,
           # the defect the example app surfaced.
           curl -s -o /tmp/token.json 'http://localhost:3000/token/voice?identity=alice'
           node -e "

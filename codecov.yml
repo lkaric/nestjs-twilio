@@ -1,0 +1,41 @@
+# yaml-language-server: $schema=https://json.schemastore.org/codecov.json
+
+coverage:
+  precision: 2
+  round: down
+  range: '65...100'
+  status:
+    project:
+      default:
+        # The v8 provider's lcov output reports line coverage, which is what
+        # Codecov computes its overall percentage from. That corresponds to
+        # the "lines" (and matching "statements"/"functions") threshold in
+        # vitest.config.ts, which is 70, not the lower 65 branches figure
+        # (branches use a different denominator lcov does not expose here).
+        target: 70%
+        threshold: 1%
+    patch:
+      default:
+        # Newly added or changed lines are held to the same 70% line target
+        # so a PR cannot introduce a large untested block even if the
+        # project-wide average still clears the bar.
+        target: 70%
+        threshold: 1%
+
+comment:
+  layout: 'reach,diff,flags,files'
+  behavior: default
+  require_changes: false
+
+# Kept in sync with vitest.config.ts's coverage.include (lib/**/*.ts) and
+# coverage.exclude (lib/**/*.test.ts, lib/**/*.interface.ts): those settings
+# already keep everything outside lib/ out of the instrumented report, but
+# ignoring the same paths here means the PR comment and Codecov's own file
+# browser agree with the locally enforced thresholds instead of silently
+# including something vitest never measured.
+ignore:
+  - 'examples/**'
+  - 'docs/**'
+  - 'scripts/**'
+  - '**/*.test.ts'
+  - '**/*.interface.ts'

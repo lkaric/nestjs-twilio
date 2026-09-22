@@ -1,0 +1,130 @@
+# yaml-language-server: $schema=https://json.schemastore.org/dependabot-2.0.json
+version: 2
+
+updates:
+  # npm ecosystem covers npm, yarn, and pnpm manifests alike. This repo is a
+  # pnpm workspace (pnpm-workspace.yaml lists "docs" and "examples/*") backed
+  # by one pnpm-lock.yaml at the repository root. Dependabot's pnpm workspace
+  # support auto-discovers workspace member manifests (docs/package.json,
+  # examples/basic/package.json) from a single root entry and resolves them
+  # against that shared lockfile, so one entry is correct and sufficient here.
+  #
+  # A second entry pointing "directory" at "docs" or "examples/basic" is not
+  # just redundant, it is actively broken for pnpm: dependabot-core's own
+  # updater rejects that shape with a "misconfigured_tooling" error, because
+  # pnpm-lock.yaml and pnpm-workspace.yaml both live in a parent directory
+  # relative to those paths, and updating a pnpm workspace member from inside
+  # its own subdirectory is unsupported. Root only.
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      # Weekly, not daily: this is a solo maintained library, and a daily
+      # schedule produces PR noise with nobody but the maintainer to triage
+      # it. Wednesday mid-morning UTC lands runs inside a working week,
+      # clear of Monday's backlog and Friday's pre-weekend review risk.
+      interval: 'weekly'
+      day: 'wednesday'
+      time: '09:00'
+      timezone: 'Etc/UTC'
+    # Grouped minor and patch updates collapse to one PR per run; the majors
+    # that stay outside the group below account for the rest of the headroom.
+    open-pull-requests-limit: 10
+    labels:
+      - 'dependencies'
+      - 'javascript'
+    commit-message:
+      # "chore" is the one commitlint type this repo's semantic-release
+      # config explicitly marks `release: false` (see .releaserc), so a
+      # Dependabot commit can never be mistaken for a release-triggering
+      # feat/fix/perf/breaking commit. `include: scope` has Dependabot append
+      # "(deps)" or "(deps-dev)" on its own, so one prefix key is enough to
+      # get conventional-commit-shaped titles for both dependency kinds.
+      prefix: 'chore'
+      include: 'scope'
+    groups:
+      # The single most important setting here: fold every minor and patch
+      # update into one PR per run instead of one PR per package. Majors are
+      # deliberately left out of this group, so each still opens on its own,
+      # since a major is where a breaking change, and the real review risk,
+      # lives.
+      npm-minor-patch:
+        applies-to: version-updates
+        patterns:
+          - '*'
+        update-types:
+          - 'minor'
+          - 'patch'
+    ignore:
+      # @nestjs/common, @nestjs/core, and @nestjs/terminus are declared as
+      # peerDependencies with a deliberately wide range (^11.0.0 || ^12.0.0)
+      # so consumers on either current Nest major can use this library.
+      # Because this package.json is a published library, Dependabot's
+      # default "widen" versioning strategy would extend that range on its
+      # own the moment a new Nest major ships. Widening a peer range is a
+      # compatibility decision a maintainer makes after actually testing
+      # against the new major, not a routine dependency bump, so major
+      # updates to these names are ignored. Minor and patch updates, plus
+      # updates to the pinned devDependency copies used for building and
+      # testing, are untouched by this rule and keep landing automatically.
+      - dependency-name: '@nestjs/*'
+        update-types:
+          - 'version-update:semver-major'
+      # twilio is a peer with the same two-major shape (^5.0.0 || ^6.0.0);
+      # the same reasoning applies.
+      - dependency-name: 'twilio'
+        update-types:
+          - 'version-update:semver-major'
+
+  # GitHub Actions, workflow files. Per Dependabot's own docs, "directory"
+  # for this ecosystem must be "/": that value is a special case meaning
+  # "scan .github/workflows plus a root-level action.yml", not a literal
+  # filesystem path. It covers ci.yml, docs.yml, and release.yml.
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'wednesday'
+      time: '09:00'
+      timezone: 'Etc/UTC'
+    open-pull-requests-limit: 5
+    labels:
+      - 'dependencies'
+    commit-message:
+      prefix: 'chore'
+      include: 'scope'
+    groups:
+      actions-minor-patch:
+        applies-to: version-updates
+        patterns:
+          - '*'
+        update-types:
+          - 'minor'
+          - 'patch'
+
+  # GitHub Actions, composite action. The "/" entry above only reaches
+  # .github/workflows and a root action.yml; dependabot-core does not walk
+  # into nested composite actions on its own. .github/actions/setup/action.yml
+  # pins pnpm/action-setup and actions/setup-node in its own "uses" lines, so
+  # it needs its own entry naming its directory directly, or those pins would
+  # never be checked.
+  - package-ecosystem: 'github-actions'
+    directory: '/.github/actions/setup'
+    schedule:
+      interval: 'weekly'
+      day: 'wednesday'
+      time: '09:00'
+      timezone: 'Etc/UTC'
+    open-pull-requests-limit: 5
+    labels:
+      - 'dependencies'
+    commit-message:
+      prefix: 'chore'
+      include: 'scope'
+    groups:
+      actions-minor-patch:
+        applies-to: version-updates
+        patterns:
+          - '*'
+        update-types:
+          - 'minor'
+          - 'patch'

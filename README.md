@@ -1,16 +1,27 @@
+<h1 align="center">nestjs-twilio</h1>
+
 <p align="center">
-  <h3 align="center">nestjs-twilio</h3>
-  <p align="center">
-    <img src="https://www.twilio.com/content/dam/twilio-com/global/en/brand/mark.png" width="80"/>
-  </p>
-  <p align="center">
-    Injectable Twilio client for NestJS
-  </p>
+  Injectable Twilio client for NestJS
 </p>
 
-[![npm version](https://img.shields.io/npm/v/nestjs-twilio)](https://www.npmjs.com/package/nestjs-twilio)
-[![Build Status](https://github.com/lkaric/nestjs-twilio/actions/workflows/build.yml/badge.svg)](https://github.com/lkaric/nestjs-twilio/actions)
-[![MIT License](https://img.shields.io/github/license/lkaric/nestjs-twilio)](LICENSE)
+<p align="center">
+  <a href="https://www.npmjs.com/package/nestjs-twilio"><img alt="npm version" src="https://img.shields.io/npm/v/nestjs-twilio?logo=npm"></a>
+  <a href="https://github.com/lkaric/nestjs-twilio/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/lkaric/nestjs-twilio/actions/workflows/ci.yml/badge.svg?branch=master"></a>
+  <a href="https://github.com/lkaric/nestjs-twilio/actions/workflows/github-code-scanning%2Fcodeql"><img alt="CodeQL" src="https://github.com/lkaric/nestjs-twilio/actions/workflows/github-code-scanning%2Fcodeql/badge.svg?branch=master"></a>
+  <a href="https://codecov.io/gh/lkaric/nestjs-twilio"><img alt="coverage" src="https://codecov.io/gh/lkaric/nestjs-twilio/branch/master/graph/badge.svg"></a>
+  <a href="https://www.npmjs.com/package/nestjs-twilio"><img alt="downloads" src="https://img.shields.io/npm/dm/nestjs-twilio"></a>
+  <a href="LICENSE"><img alt="MIT licence" src="https://img.shields.io/npm/l/nestjs-twilio"></a>
+</p>
+
+<p align="center">
+  <a href="https://nestjs-twilio.lazar.sh">Documentation</a>
+  ·
+  <a href="https://nestjs-twilio.lazar.sh/getting-started/">Quick Start</a>
+  ·
+  <a href="https://nestjs-twilio.lazar.sh/api/readme/">API Reference</a>
+  ·
+  <a href="MIGRATION.md">v4 to v5 Migration</a>
+</p>
 
 Full-featured NestJS integration for Twilio with:
 

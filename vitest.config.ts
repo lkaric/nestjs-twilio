@@ -16,7 +16,7 @@ export default defineConfig({
     passWithNoTests: true,
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'html'],
+      reporter: ['text', 'json', 'html', 'lcov'],
       include: ['lib/**/*.ts'],
       exclude: ['lib/**/*.test.ts', 'lib/**/*.interface.ts'],
       lines: 70,

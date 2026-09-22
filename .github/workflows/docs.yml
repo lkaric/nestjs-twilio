@@ -2,7 +2,7 @@
 name: Docs
 
 # Deploy only. Pull requests are covered by the `Docs site` job in ci.yml,
-# which gates the required CI check — so a broken site is caught at review
+# which gates the required CI check, so a broken site is caught at review
 # time, not at deploy time.
 on:
   push:
