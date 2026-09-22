@@ -7,7 +7,7 @@
 <p align="center">
   <a href="https://www.npmjs.com/package/nestjs-twilio"><img alt="npm version" src="https://img.shields.io/npm/v/nestjs-twilio?logo=npm"></a>
   <a href="https://github.com/lkaric/nestjs-twilio/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/lkaric/nestjs-twilio/actions/workflows/ci.yml/badge.svg?branch=master"></a>
-  <a href="https://github.com/lkaric/nestjs-twilio/actions/workflows/github-code-scanning%2Fcodeql"><img alt="CodeQL" src="https://github.com/lkaric/nestjs-twilio/actions/workflows/github-code-scanning%2Fcodeql/badge.svg?branch=master"></a>
+  <a href="https://github.com/lkaric/nestjs-twilio/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://github.com/lkaric/nestjs-twilio/actions/workflows/codeql.yml/badge.svg?branch=master"></a>
   <a href="https://codecov.io/gh/lkaric/nestjs-twilio"><img alt="coverage" src="https://codecov.io/gh/lkaric/nestjs-twilio/branch/master/graph/badge.svg"></a>
   <a href="https://www.npmjs.com/package/nestjs-twilio"><img alt="downloads" src="https://img.shields.io/npm/dm/nestjs-twilio"></a>
   <a href="LICENSE"><img alt="MIT licence" src="https://img.shields.io/npm/l/nestjs-twilio"></a>

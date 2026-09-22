@@ -1,4 +1,4 @@
-import { ArgumentsHost, Catch, ExceptionFilter, HttpStatus } from '@nestjs/common';
+import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common';
 import { BaseExceptionFilter } from '@nestjs/core';
 
 // Type-only: erased at compile time, so this never becomes a runtime import.
@@ -70,11 +70,33 @@ interface TwilioFilterHttpResponse {
  * ```
  */
 export function isTwilioRestException(exception: unknown): exception is RestException {
-  if (!(exception instanceof Error) || !('status' in exception)) {
+  if (!(exception instanceof Error)) {
     return false;
   }
 
-  return typeof exception.status === 'number';
+  // Nest's own HttpException is an Error carrying a numeric `status`, so a
+  // status check alone claims every BadRequestException, NotFoundException and
+  // friend as a Twilio error. Registered globally, as this filter's own
+  // examples show, that silently replaced real responses (a class-validator
+  // message array, say) with `{ code: 'unknown' }`.
+  if (exception instanceof HttpException) {
+    return false;
+  }
+
+  const candidate = exception as Error & Partial<RestException>;
+
+  if (typeof candidate.status !== 'number') {
+    return false;
+  }
+
+  // Twilio's RestException always carries at least one of these alongside the
+  // status. Requiring one stops unrelated third-party errors that happen to
+  // expose a numeric `status` from being reshaped into a Twilio response.
+  return (
+    typeof candidate.code === 'number' ||
+    typeof candidate.moreInfo === 'string' ||
+    typeof candidate.details === 'object'
+  );
 }
 
 /**

@@ -1,6 +1,6 @@
 import { defineConfig } from 'vitest/config';
 
-import { swcPlugin } from './vitest.shared';
+import { swcPlugin } from './vitest.shared.js';
 
 export default defineConfig({
   plugins: [swcPlugin],
@@ -24,10 +24,20 @@ export default defineConfig({
       reporter: ['text', 'json', 'html', 'lcov'],
       include: ['lib/**/*.ts'],
       exclude: ['lib/**/*.test.ts', 'lib/**/*.interface.ts'],
-      lines: 70,
-      functions: 70,
-      branches: 65,
-      statements: 70,
+      // Vitest reads these from `coverage.thresholds`. Declared one level up,
+      // as they were, the whole block is silently ignored and the suite passes
+      // at any coverage at all.
+      //
+      // Set near the measured figures (100% lines, 94.9% branches) rather than
+      // at a round number well below them. A threshold far under actual
+      // coverage permits a large regression without failing, which is how the
+      // uncovered guard, interceptor and filter shipped in v5.0.0.
+      thresholds: {
+        lines: 95,
+        functions: 95,
+        branches: 85,
+        statements: 95,
+      },
     },
   },
 });
