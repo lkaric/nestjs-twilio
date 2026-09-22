@@ -2,6 +2,7 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import starlightTypeDoc, { typeDocSidebarGroup } from 'starlight-typedoc';
+import starlightLlmsTxt from 'starlight-llms-txt';
 
 export default defineConfig({
   // Served from a custom subdomain, so the site lives at the root.
@@ -50,6 +51,42 @@ export default defineConfig({
             hidePageHeader: true,
             hideBreadcrumbs: true,
           },
+        }),
+
+        // Emits /llms.txt (an index) and /llms-full.txt (the whole corpus as
+        // one document) at build time, derived from the same pages a human
+        // reads. Generating rather than hand-writing them is the point: a
+        // hand-maintained corpus silently rots as the docs change.
+        starlightLlmsTxt({
+          projectName: 'nestjs-twilio',
+          description:
+            'Injectable Twilio client for NestJS, with webhook signature validation, ' +
+            'TwiML response serialization, Twilio-to-HTTP error mapping and ' +
+            'multi-account support.',
+          details: [
+            '- `twilio` is a peer dependency and must be installed alongside this package.',
+            '- Requires Node.js >=20.19 and @nestjs/common and @nestjs/core ^11 || ^12.',
+            '- Every public symbol is exported from the package root; deep imports into',
+            '  `nestjs-twilio/dist/**` are not supported.',
+            '- Twilio SDK client options are flat on the module options object. They were',
+            '  nested under `options` in v4.',
+          ].join('\n'),
+          optionalLinks: [
+            {
+              label: 'npm package',
+              url: 'https://www.npmjs.com/package/nestjs-twilio',
+              description: 'Published releases and version history.',
+            },
+            {
+              label: 'GitHub repository',
+              url: 'https://github.com/lkaric/nestjs-twilio',
+              description: 'Source, issues and discussions.',
+            },
+          ],
+          // Order the corpus the way someone learning the library would read
+          // it, rather than alphabetically.
+          promote: ['getting-started', 'configuration', 'features/**'],
+          demote: ['api/**', 'migration'],
         }),
       ],
       sidebar: [

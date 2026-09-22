@@ -3,81 +3,52 @@
 > Injectable Twilio client for NestJS, with webhook signature validation, TwiML
 > response serialization, Twilio-to-HTTP error mapping and multi-account support.
 
-- Documentation: https://nestjs-twilio.lazar.sh
-- Package: https://www.npmjs.com/package/nestjs-twilio
-- Source: https://github.com/lkaric/nestjs-twilio
-- License: MIT
+This file ships inside the npm tarball and is intentionally short. The
+authoritative, always-current corpus is generated from the documentation site
+on every build:
 
-## Install
+- Index: https://nestjs-twilio.lazar.sh/llms.txt
+- Complete: https://nestjs-twilio.lazar.sh/llms-full.txt
+- Abridged: https://nestjs-twilio.lazar.sh/llms-small.txt
 
-```bash
-npm install nestjs-twilio twilio
-```
+The complete corpus includes the full API reference, itself generated from the
+library's JSDoc, so it cannot drift from the source.
 
-`twilio` is a peer dependency. Peer ranges: `@nestjs/common` and `@nestjs/core`
-`^11 || ^12`, `twilio` `^5 || ^6`, `reflect-metadata` `^0.1.12 || ^0.2.0`,
-`rxjs` `^7.8`. `@nestjs/terminus` is an optional peer. Requires Node.js >=20.19.
+## Facts worth having without a network call
 
-## Register
+- `twilio` is a **peer dependency**: install it alongside this package.
+- Peer ranges: `@nestjs/common` and `@nestjs/core` `^11 || ^12`, `twilio`
+  `^5 || ^6`, `reflect-metadata` `^0.1.12 || ^0.2.0`, `rxjs` `^7.8`.
+  `@nestjs/terminus` is optional. Node.js `>=20.19`.
+- Every public symbol is exported from the package root. Deep imports into
+  `nestjs-twilio/dist/**` are not supported.
+- Twilio SDK client options are **flat** on the module options object
+  (`region`, `edge`, …). They were nested under `options` in v4.
+- `isGlobal` is a top-level key on the same options object.
+
+## Minimal usage
 
 ```ts
-import { TwilioModule } from 'nestjs-twilio';
+import { TwilioModule, InjectTwilio } from 'nestjs-twilio';
+import type { Twilio } from 'twilio';
 
 @Module({
   imports: [
     TwilioModule.forRoot({
       accountSid: process.env.TWILIO_ACCOUNT_SID,
       authToken: process.env.TWILIO_AUTH_TOKEN,
-      // Any twilio ClientOpts key is accepted at this level, e.g. region, edge.
-      isGlobal: true,
     }),
   ],
 })
 export class AppModule {}
+
+@Injectable()
+export class SmsService {
+  constructor(@InjectTwilio() private readonly twilio: Twilio) {}
+}
 ```
 
-`forRootAsync({ imports, useFactory, inject })` is available for async
-configuration. Credentials are validated at bootstrap and throw a
-`BadRequestException` naming the missing field.
+## Links
 
-## Inject
-
-```ts
-import { InjectTwilio, TwilioService } from 'nestjs-twilio';
-import type { Twilio } from 'twilio';
-
-// Raw SDK client
-constructor(@InjectTwilio() private readonly twilio: Twilio) {}
-
-// Or the wrapper service, exposing `.client`
-constructor(private readonly twilioService: TwilioService) {}
-```
-
-## Features
-
-- **Webhook signature validation** — `TwilioWebhookGuard` and the
-  `@TwilioWebhook()` decorator. Handles form-encoded and JSON bodies, and
-  reconstructs the signed URL behind a proxy via `X-Forwarded-Proto` and
-  `X-Forwarded-Host`.
-- **TwiML responses** — `TwimlInterceptor` serializes `VoiceResponse`,
-  `MessagingResponse` and `FaxResponse` to XML and sets `Content-Type`.
-- **Error mapping** — `TwilioExceptionFilter` maps the SDK's `RestException` to
-  a Nest `HttpException`, preserving the Twilio error code and `more_info`.
-- **Multi-account** — `TwilioModule.forFeature(name, options)` and
-  `forFeatureAsync(name, options)` register named clients, injected with
-  `@InjectTwilio(name)`. Tokens come from `getTwilioClientToken(name)`.
-- **Dual ESM + CJS** with an `exports` map; decorator metadata is preserved in
-  both builds.
-
-## Public exports
-
-All public symbols are exported from the package root: `TwilioModule`,
-`TwilioService`, `InjectTwilio`, `getTwilioClientToken`, `TwilioWebhookGuard`,
-`TwilioWebhook`, `TwimlInterceptor`, `TwilioExceptionFilter`, plus the option
-and payload types. Deep imports into `nestjs-twilio/dist/**` are not supported.
-
-## Docs in this repository
-
-- README.md — overview and copy-paste recipes
-- MIGRATION.md — v4 to v5 upgrade guide
-- CONTRIBUTING.md — setup, conventions, commit format, CI
+- Source: https://github.com/lkaric/nestjs-twilio
+- Package: https://www.npmjs.com/package/nestjs-twilio
