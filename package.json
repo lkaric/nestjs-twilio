@@ -119,6 +119,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.10.1",
     "@vitest/coverage-v8": "^5.0.1",
+    "conventional-changelog-conventionalcommits": "^10.4.0",
     "dotenv": "^17.2.4",
     "jsonwebtoken": "^9.0.3",
     "lefthook": "^2.1.14",

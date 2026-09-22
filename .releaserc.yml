@@ -5,7 +5,7 @@ branches:
 
 plugins:
   - - '@semantic-release/commit-analyzer'
-    - preset: conventional
+    - preset: conventionalcommits
       releaseRules:
         - breaking: true
           release: major

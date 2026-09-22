@@ -53,6 +53,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: ^5.0.1
         version: 5.0.1(vitest@5.0.1)
+      conventional-changelog-conventionalcommits:
+        specifier: ^10.4.0
+        version: 10.4.0
       dotenv:
         specifier: ^17.2.4
         version: 17.4.2
